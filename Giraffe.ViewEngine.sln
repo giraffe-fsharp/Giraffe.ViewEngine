@@ -5,13 +5,13 @@ VisualStudioVersion = 16.0.29613.14
 MinimumVisualStudioVersion = 15.0.26124.0
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{2220E7F8-8762-4E3E-BA32-30BCD8915F04}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{46B33AE0-AFED-4B25-A515-CFE125BE9CF4}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{46B33AE0-AFED-4B25-A515-CFE125BE9CF4}"
 EndProject
 Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "Giraffe.ViewEngine", "src\Giraffe.ViewEngine\Giraffe.ViewEngine.fsproj", "{18666EED-40CE-4494-9103-B2C4557EAEF2}"
 EndProject
-Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "Giraffe.Benchmarks", "tests\Giraffe.Benchmarks\Giraffe.Benchmarks.fsproj", "{B73D9521-FF59-4514-B26B-E17CEDDDD7B6}"
+Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "Giraffe.ViewEngine.Benchmarks", "tests\Giraffe.ViewEngine.Benchmarks\Giraffe.ViewEngine.Benchmarks.fsproj", "{B73D9521-FF59-4514-B26B-E17CEDDDD7B6}"
 EndProject
-Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "Giraffe.Tests", "tests\Giraffe.Tests\Giraffe.Tests.fsproj", "{5EBF86C7-6FF5-45D6-9787-A77FCF77188D}"
+Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "Giraffe.ViewEngine.Tests", "tests\Giraffe.ViewEngine.Tests\Giraffe.ViewEngine.Tests.fsproj", "{5EBF86C7-6FF5-45D6-9787-A77FCF77188D}"
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "GithubExample", "src\GithubExample\GithubExample.fsproj", "{CA0334A0-66E1-4A9D-8837-9C67A1EF0A93}"
 EndProject

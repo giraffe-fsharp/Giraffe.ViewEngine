@@ -1,4 +1,6 @@
-﻿open BenchmarkDotNet.Attributes;
+﻿module Giraffe.ViewEngine.Benchmarks
+
+open BenchmarkDotNet.Attributes;
 open BenchmarkDotNet.Running;
 open Giraffe.ViewEngine
 open System.Text
@@ -45,7 +47,7 @@ type HtmlUtf8Benchmark() =
                                 [ rawText "Search" ] ] ] ] ]
         ]
 
-    let stringBuilder = new StringBuilder(16 * 1024)
+    let stringBuilder = StringBuilder(16 * 1024)
 
     [<Benchmark( Baseline = true )>]
     member this.Default() =
