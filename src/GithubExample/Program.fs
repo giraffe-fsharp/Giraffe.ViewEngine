@@ -1,44 +1,44 @@
-﻿module GithubExample = 
-  open Giraffe.GiraffeViewEngine
-  
-  let bodyTemplate (nameList : string list) : XmlNode = 
+﻿module GithubExample =
+  open Giraffe.ViewEngine
+
+  let bodyTemplate (nameList : string list) : XmlNode =
     body [] [
       h1 [] [Text "Welcome:"]
-      ol [] 
+      ol []
         (nameList |> List.map (fun x -> li [] [Text x]))
     ]
 
-  let navTemplate = 
+  let navTemplate =
     nav [] [
       a [_href "./About"] [Text "About"]
     ]
 
-  let documentTemplate (nav : XmlNode) (body : XmlNode ) = 
+  let documentTemplate (nav : XmlNode) (body : XmlNode ) =
     html [] [
       nav
       body
       ]
 
-  let render welcomeUsers = 
+  let render welcomeUsers =
     bodyTemplate welcomeUsers
     |> (documentTemplate navTemplate)
-    |> Giraffe.GiraffeViewEngine.renderHtmlDocument
+    |> Giraffe.ViewEngine.renderHtmlDocument
 
 [<EntryPoint>]
-let main args = 
-  let tfn = 
+let main args =
+  let tfn =
     (System.IO.Path.GetTempFileName())
-    |> sprintf "%s.html" 
+    |> sprintf "%s.html"
 
-  args 
+  args
   |> Seq.toList
   |> GithubExample.render
   |> fun x -> System.IO.File.WriteAllText(tfn, x)
-  |> ignore 
+  |> ignore
 
-  let process = new System.Diagnostics.Process()
-  process.StartInfo.FileName <- tfn
-  process.StartInfo.UseShellExecute <- true
-  process.Start() |> ignore
+  let p = new System.Diagnostics.Process()
+  p.StartInfo.FileName <- tfn
+  p.StartInfo.UseShellExecute <- true
+  p.Start() |> ignore
 
   0

@@ -13,7 +13,7 @@
 // Thanks to Suave (https://github.com/SuaveIO/suave) for letting us borrow their code
 // and thanks to Florian Verdonck (https://github.com/nojaf) for porting it to Giraffe.
 
-module Giraffe.GiraffeViewEngine
+module Giraffe.ViewEngine
 
 open System
 open System.Net
@@ -60,7 +60,7 @@ let voidTag (tagName    : string)
             (attributes : XmlAttribute list) =
     VoidElement (tagName, Array.ofList attributes)
 
-/// **Description**
+/// <summary>
 ///
 /// The `rawText` function will create an object of type `XmlNode` where the content will be rendered in its original form (without encoding).
 ///
@@ -69,21 +69,19 @@ let voidTag (tagName    : string)
 /// Please be aware that the the usage of `rawText` is mainly designed for edge cases where someone would purposefully want to inject HTML (or JavaScript) code into a rendered view. If not used carefully this could potentially lead to serious security vulnerabilities and therefore should be used only when explicitly required.
 ///
 /// Most cases and particularly any user provided content should always be output via the `encodedText` function.
-///
+/// </summary>
 let rawText     (content : string) = Text content
 
-/// **Description**
-///
+/// <summary>
 /// The `encodedText` function will output a string where the content has been HTML encoded.
-///
+/// </summary>
 let encodedText (content : string) = Text (encode content)
 let emptyText                      = rawText ""
 let comment     (content : string) = rawText (sprintf "<!-- %s -->" content)
 
-/// **Description**
-///
+/// <summary>
 /// An alias for the `encodedText` function.
-///
+/// </summary>
 let str = encodedText
 
 // ---------------------------
@@ -390,7 +388,9 @@ module Attributes =
     let _typemustmatch      = flag "typemustmatch"
 
 
+/// <summary>
 /// Attributes to support WAI-ARIA accessibility guidelines
+/// </summary>
 module Accessibility =
 
     // Valid role attributes

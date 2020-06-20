@@ -1,6 +1,6 @@
 ﻿open BenchmarkDotNet.Attributes;
 open BenchmarkDotNet.Running;
-open Giraffe.GiraffeViewEngine
+open Giraffe.ViewEngine
 open System.Text
 open System.Buffers
 

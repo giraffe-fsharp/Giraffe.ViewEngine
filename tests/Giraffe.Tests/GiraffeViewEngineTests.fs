@@ -1,7 +1,7 @@
 module Giraffe.Tests.GiraffeViewEngineTests
 
 open Xunit
-open Giraffe.GiraffeViewEngine
+open Giraffe.ViewEngine
 
 [<Fact>]
 let ``Single html root should compile`` () =
