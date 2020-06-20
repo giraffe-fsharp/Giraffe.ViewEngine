@@ -1,0 +1,43 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <!-- General -->
+    <AssemblyName>Giraffe.ViewEngine</AssemblyName>
+    <Version>1.0.0</Version>
+    <Description>F# view engine support for the Giraffe web framework.</Description>
+    <Copyright>Copyright 2020 Dustin Moris Gorski</Copyright>
+    <Authors>Dustin Moris Gorski and contributors</Authors>
+    <NeutralLanguage>en-GB</NeutralLanguage>
+
+    <!-- Build settings -->
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <DebugType>portable</DebugType>
+    <OutputType>Library</OutputType>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <IncludeSymbols>true</IncludeSymbols>
+
+    <!-- NuGet settings -->
+    <PackageId>Giraffe.ViewEngine</PackageId>
+    <PackageTags>Giraffe;View;Engine;ASP.NET Core;FSharp;Functional;Http;Web;Framework;Micro;Service</PackageTags>
+    <PackageReleaseNotes>https://raw.githubusercontent.com/giraffe-fsharp/Giraffe.ViewEngine/master/RELEASE_NOTES.md</PackageReleaseNotes>
+    <PackageProjectUrl>https://github.com/giraffe-fsharp/Giraffe.ViewEngine</PackageProjectUrl>
+    <PackageIconUrl>https://raw.githubusercontent.com/giraffe-fsharp/Giraffe/master/giraffe-64x64.png</PackageIconUrl>
+    <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
+    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+    <RepositoryType>git</RepositoryType>
+    <RepositoryUrl>https://github.com/giraffe-fsharp/Giraffe.ViewEngine</RepositoryUrl>
+
+    <!-- SourceLink settings -->
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+
+    <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
+    <NoWarn>FS2003;FS0044</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="GiraffeViewEngine.fs" />
+  </ItemGroup>
+
+</Project>
