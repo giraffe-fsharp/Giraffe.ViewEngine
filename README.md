@@ -17,6 +17,9 @@ An F# view engine for [Giraffe](https://github.com/giraffe-fsharp/Giraffe) and o
     - [Javascript event handlers](#javascript-event-handlers)
     - [Custom Elements and Attributes](#custom-elements-and-attributes)
     - [Rendering Views](#rendering-views)
+        - [Rendering HTML](#rendering-html)
+        - [Rendering XML](#rendering-xml)
+        - [StringBuilder Pools](#stringbuilder-pools)
     - [Common Patterns](#common-patterns)
         - [Master Pages](#master-pages)
         - [Partial Views](#partial-views)
@@ -263,21 +266,31 @@ let someHtml =
 
 ### Rendering Views
 
-Rendering views in Giraffe is done through one of the following functions:
+Rendering views with the `Giraffe.ViewEngine` can be done in several ways. The `RenderView` module exposes three sub modules which can be used to specify the desired output format:
 
-- `renderHtmlDocument`
-- `renderHtmlNodes`
-- `renderHtmlNode`
-- `renderXmlNodes`
-- `renderXmlNode`
+- `RenderView.IntoStringBuilder` implements functions to render a view into a `StringBuilder` object which can be used for further processing.
+- `RenderView.AsString` implements functions to output a view directly as a `string`.
+- `RenderView.AsBytes` implements functions to output a view directly as a `byte array`.
 
-The `Giraffe.ViewEngine` cannot only be used to render HTML views, but also for any other XML based content such as `<svg>` images or other arbitrary XML based data.
+All three sub modules implement the following public functions:
 
-The `renderHtmlDocument` function takes a single `XmlNode` as input parameter and renders a HTML page with a `DOCTYPE` declaration. This function should be used for rendering a complete HTML document.
+- `htmlDocument`
+- `htmlNodes`
+- `htmlNode`
+- `xmlNodes`
+- `xmlNode`
 
-The `renderHtmlNodes` function takes an `XmlNode list` as input parameter and will output a single HTML string containing all the rendered HTML code. The `renderHtmlNode` function renders a single `XmlNode` element into a valid HTML string. Both, the `renderHtmlNodes` and `renderHtmlNode` function are useful for use cases where a HTML snippet needs to be created without a `DOCTYPE` declaration (e.g. templated emails, etc.).
+#### Rendering HTML
 
-The `renderXmlNodes` and `renderXmlNode` function are identical to `renderHtmlNodes` and `renderHtmlNode`, except that they will render void elements differently:
+The `htmlDocument` function takes a single `XmlNode` as input parameter and renders a HTML page with a `DOCTYPE` declaration. This function should be used for rendering a complete HTML document.
+
+The `htmlNodes` function takes an `XmlNode list` as input parameter and will output a single HTML string containing all the rendered HTML code. The `htmlNode` function renders a single `XmlNode` element into a valid HTML string. Both, the `htmlNodes` and `htmlNode` function are useful for use cases where a HTML snippet needs to be created without a `DOCTYPE` declaration (e.g. email templates, etc.).
+
+#### Rendering XML
+
+Views cannot only be rendered into HTML pages but also into other XML based content such as SVG images or other data objects.
+
+The `xmlNodes` and `xmlNode` function are identical to `htmlNodes` and `htmlNode`, except that they will render void elements differently:
 
 ```fsharp
 let someTag = voidTag "foo"
@@ -290,19 +303,15 @@ let output1 = renderHtmlNode someContent
 let output2 = renderXmlNode someContent
 ```
 
-All `Giraffe.ViewEngine` http handlers are using a thread static `StringBuilderPool` to avoid the creation of large `StringBuilder` objects for each render call and dynamically grow/shrink that pool based on the application's needs. However if the application is running into any memory issues then this performance feature can be disabled by setting `StringBuilderPool.IsEnabled <- false`.
+#### StringBuilder Pools
 
-Additionally with Giraffe 3.0.0 or higher there is a new module called `ViewBuilder` under the `Giraffe.ViewEngine` namespace. This module exposes additional view rendering functions which compile a view into a `StringBuilder` object instead of returning a single `string`:
+All functions from the `RenderView.AsString` and `RenderView.AsBytes` modules are using a thread static `StringBuilderPool` to avoid the creation of large `StringBuilder` objects for each render call and dynamically grow/shrink that pool based on the application's needs. However if the application is running into any memory issues then this performance feature can be disabled by setting `StringBuilderPool.IsEnabled` to false:
+ 
+```fsharp
+StringBuilderPool.IsEnabled <- false
+```
 
-- `ViewBuilder.buildHtmlDocument`
-- `ViewBuilder.buildHtmlNodes`
-- `ViewBuilder.buildHtmlNode`
-- `ViewBuilder.buildXmlNodes`
-- `ViewBuilder.buildXmlNode`
-
-The `ViewBuilder.build[...]` functions can be useful if there is additional string processing required before/after composing a view by the `Giraffe.ViewEngine` (e.g. embedding HTML snippets in an email template, etc.). These functions also serve as the lower level building blocks of the equivalent `render[...]` functions.
-
-Example usage:
+Additionally the `RenderView.IntoStringBuilder` module can be used if full control of the `StringBuilder` object is required:
 
 ```fsharp
 open System.Text
@@ -315,6 +324,8 @@ let someHtml =
         ]
     ]
 
+// Create your own StringBuilder, which gives the caller
+// full control of the lifecycle of the object:
 let sb = new StringBuilder()
 
 // Perform actions on the `sb` object...
@@ -322,7 +333,9 @@ sb.AppendLine "This is a HTML snippet inside a markdown string:"
   .AppendLine ""
   .AppendLine "```html" |> ignore
 
-let sb' = ViewBuilder.buildHtmlNode sb someHtml
+// Using RederView.IntoStringBuilder some HTML content can be written
+// directly into the given StringBuilder object:
+let sb' = RederView.IntoStringBuilder.htmlNode sb someHtml
 
 // Perform more actions on the `sb` object...
 sb'.AppendLine "```" |> ignore
@@ -498,7 +511,7 @@ module Views =
 
 This ensures that the opening of the `Giraffe.ViewEngine` is only contained in a small context of an application's codebase and therefore less of a threat to accidental overrides. In the above example views can always be accessed through the `Views` sub module (e.g. `Views.index`).
 
-### Samples
+## Samples
 
 The following sample code creates and renders a HTML page with the help of the `Giraffe.ViewEngine` and subsequently saves it into a temporary `.html` file before opening it with the default browser:
 
