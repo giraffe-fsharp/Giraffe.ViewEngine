@@ -1,0 +1,64 @@
+name: .NET Core
+on:
+  push:
+  pull_request:
+  release:
+    types:
+      - published
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup .NET Core
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 3.1.301
+    - name: Restore
+      run: dotnet restore src/Giraffe.ViewEngine/Giraffe.ViewEngine.fsproj
+    - name: Build
+      run: dotnet build --configuration Release --no-restore src/Giraffe.ViewEngine/Giraffe.ViewEngine.fsproj
+    - name: Test
+      run: dotnet test --configuration Release tests/Giraffe.ViewEngine.Tests/Giraffe.ViewEngine.Tests.fsproj
+    - name: Pack
+      run: dotnet pack --configuration Release --no-restore --verbosity normal src/Giraffe.ViewEngine/Giraffe.ViewEngine.fsproj
+    - name: Upload Artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: nupkg
+        path: ./src/Giraffe.ViewEngine/bin/Release/*.nupkg
+
+  prerelease:
+    needs: build
+    runs-on: ubuntu-latest
+    env:
+      GITHUB_SOURCE: https://nuget.pkg.github.com/giraffe-fsharp/
+      GITHUB_USER: dustinmoris
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - name: Download Artifact
+        uses: actions/download-artifact@v1
+        with:
+          name: nupkg
+      - name: Push Pre-Release NuGet
+        run: |
+          for f in ./nupkg/*.nupkg
+          do
+            curl -vX PUT -u "$GITHUB_USER:$GITHUB_TOKEN" -F package=@$f $GITHUB_SOURCE
+          done
+        shell: bash
+
+  deploy:
+    needs: build
+    if: github.event_name == 'release'
+    runs-on: ubuntu-latest
+    env:
+      NUGET_KEY: ${{ secrets.NUGET_KEY }}
+    steps:
+      - name: Download Artifact
+        uses: actions/download-artifact@v1
+        with:
+          name: nupkg
+      - name: Push NuGet
+        run: dotnet nuget push nupkg/*.nupkg --source https://api.nuget.org/v3/index.json --skip-duplicate --api-key $NUGET_KEY
