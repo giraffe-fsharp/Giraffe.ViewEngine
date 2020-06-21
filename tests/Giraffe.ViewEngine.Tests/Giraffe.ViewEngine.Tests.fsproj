@@ -4,7 +4,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Include="GiraffeViewEngineTests.fs" />
+    <Compile Include="Tests.fs" />
   </ItemGroup>
 
   <ItemGroup>
