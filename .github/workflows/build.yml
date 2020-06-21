@@ -22,7 +22,7 @@ jobs:
     - name: Test
       run: dotnet test --configuration Release tests/Giraffe.ViewEngine.Tests/Giraffe.ViewEngine.Tests.fsproj
     - name: Pack
-      run: dotnet pack --configuration Release --no-restore --verbosity normal src/Giraffe.ViewEngine/Giraffe.ViewEngine.fsproj
+      run: dotnet pack --configuration Release --no-restore --verbosity normal --include-symbols --include-source -p:PackageVersion=$GITHUB_RUN_ID src/Giraffe.ViewEngine/Giraffe.ViewEngine.fsproj
     - name: Upload Artifact
       uses: actions/upload-artifact@v2
       with:
@@ -31,7 +31,7 @@ jobs:
 
   prerelease:
     needs: build
-    if: github.ref == 'develop'
+    if: github.ref == 'refs/heads/develop'
     runs-on: ubuntu-latest
     env:
       GITHUB_SOURCE: https://nuget.pkg.github.com/giraffe-fsharp/
@@ -57,9 +57,23 @@ jobs:
     env:
       NUGET_KEY: ${{ secrets.NUGET_KEY }}
     steps:
-      - name: Download Artifact
-        uses: actions/download-artifact@v1
+      - uses: actions/checkout@v2
+      - name: Setup .NET Core
+        uses: actions/setup-dotnet@v1
         with:
-          name: nupkg
-      - name: Push NuGet
+          dotnet-version: 3.1.301
+      - name: Create Release NuGet package
+        run: |
+          arrTag=(${GITHUB_REF//\// })
+          VERSION="${arrTag[2]}"
+          echo Version: $VERSION
+          dotnet pack --configuration Release --verbosity normal --include-symbols --include-source -p:PackageVersion=$VERSION -o nupkg src/Giraffe.ViewEngine/Giraffe.ViewEngine.fsproj
+      - name: Push to GitHub Feed
+        run: |
+          for f in ./nupkg/*.nupkg
+          do
+            curl -vX PUT -u "$GITHUB_USER:$GITHUB_TOKEN" -F package=@$f $GITHUB_SOURCE
+          done
+        shell: bash
+      - name: Push to NuGet Feed
         run: dotnet nuget push nupkg/*.nupkg --source https://api.nuget.org/v3/index.json --skip-duplicate --api-key $NUGET_KEY
