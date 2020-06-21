@@ -67,6 +67,8 @@ jobs:
           arrTag=(${GITHUB_REF//\// })
           VERSION="${arrTag[2]}"
           echo Version: $VERSION
+          VERSION="${VERSION//v}"
+          echo Clean Version: $VERSION
           dotnet pack --configuration Release --verbosity normal --include-symbols --include-source -p:PackageVersion=$VERSION -o nupkg src/Giraffe.ViewEngine/Giraffe.ViewEngine.fsproj
       - name: Push to GitHub Feed
         run: |
