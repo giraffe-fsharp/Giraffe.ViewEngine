@@ -224,9 +224,9 @@ HTML attributes follow the same naming convention except that attributes have an
 
 The underscore does not only help to distinguish an attribute from an element, but also avoid a naming conflict between tags and attributes of the same name (e.g. `<form>` vs. `<input form="form1">`).
 
-If a HTML attribute has a hyphen in the name (e.g. `accept-charset`) then the equivalent Giraffe attribute would be written in camel case notion (e.g. `acceptCharset`).
+If a HTML attribute has a hyphen in the name (e.g. `accept-charset`) then the equivalent Giraffe attribute would be written in camel case notion after the initial underscore (e.g. `_acceptCharset`).
 
-*Should you find a HTML tag or attribute missing in the `Giraffe.ViewEngine` then you can either [create it yourself](#custom-elements-and-attributes) or send a [pull request on GitHub](https://github.com/giraffe-fsharp/Giraffe/pulls).*
+*Should you find a HTML tag or attribute missing in the `Giraffe.ViewEngine` then you can either [create it yourself](#custom-elements-and-attributes) or send a [pull request on GitHub](https://github.com/giraffe-fsharp/Giraffe.ViewEngine/pulls).*
 
 ### Best Practices
 
@@ -358,13 +358,13 @@ sb'.AppendLine "```" |> ignore
 let markdownOutput = sb'.ToString()
 ```
 
-### Common View Engine Features
+### Common Patterns
 
-The `Giraffe.ViewEngine` doesn't have any specially built functions for commonly known features such as master pages or partial views, mainly because the nature of the view engine itself doesn't require it in most cases.
+The `Giraffe.ViewEngine` is nothing more but simple F# code dressed up as a DSL which can be used to compose rich HTML content in a structured way. As such it doesn't require any built-in functions to enable common view engine features such as master pages, partial views or model binding. These things can all be accomplished through normal F# coding patterns:
 
 #### Master Pages
 
-Creating a master page is a simple matter of piping two functions together:
+Creating a master page is as simple as piping two functions together:
 
 ```fsharp
 module Views =
@@ -420,7 +420,7 @@ module Views =
 
 #### Partial Views
 
-A partial view is nothing more than one function or object being called from within another function:
+Partial views can be codified by calling one function from within another:
 
 ```fsharp
 module Views =
@@ -481,9 +481,9 @@ module Views =
         ] |> master model.PageTitle
 ```
 
-#### If Statements, Loops, etc.
+#### If statements, loops and other logical constructs
 
-Things like if statements, loops and other normal F# language constructs work just as expected:
+Things like if statements, loops and other F# language constructs work just as expected:
 
 ```fsharp
 let partial (books : Book list) =
@@ -494,7 +494,7 @@ let partial (books : Book list) =
     ]
 ```
 
-Overall the `Giraffe.ViewEngine` is extremely flexible and feature rich by nature based on the fact that it is generated via normal compiled F# code.
+Overall the `Giraffe.ViewEngine` is extremely flexible and more feature rich than any other view engine given that it is just normal compiled F# code.
 
 
 
