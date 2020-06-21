@@ -22,7 +22,7 @@ jobs:
     - name: Test
       run: dotnet test --configuration Release tests/Giraffe.ViewEngine.Tests/Giraffe.ViewEngine.Tests.fsproj
     - name: Pack
-      run: dotnet pack --configuration Release --no-restore --verbosity normal src/Giraffe.ViewEngine/Giraffe.ViewEngine.fsproj
+      run: dotnet pack --configuration Release --no-restore --verbosity normal --include-symbols --include-source -p:PackageVersion=$GITHUB_RUN_ID src/Giraffe.ViewEngine/Giraffe.ViewEngine.fsproj
     - name: Upload Artifact
       uses: actions/upload-artifact@v2
       with:
@@ -38,10 +38,8 @@ jobs:
       GITHUB_USER: dustinmoris
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
-      - name: Download Artifact
-        uses: actions/download-artifact@v1
-        with:
-          name: nupkg
+      - name: Pack
+        run: dotnet pack --configuration Release --no-restore --verbosity normal --include-symbols --include-source -p:PackageVersion=$GITHUB_RUN_ID -o nupkg src/Giraffe.ViewEngine/Giraffe.ViewEngine.fsproj
       - name: Push Pre-Release NuGet
         run: |
           for f in ./nupkg/*.nupkg
