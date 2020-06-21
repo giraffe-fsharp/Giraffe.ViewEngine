@@ -13,15 +13,18 @@ An F# view engine for [Giraffe](https://github.com/giraffe-fsharp/Giraffe) and o
     - [Overview](#overview)
     - [HTML Elements and Attributes](#html-elements-and-attributes)
     - [Text Content](#text-content)
-    - [Javascript event handlers](#javascript-event-handlers)
     - [Naming Convention](#naming-convention)
-    - [Best Practices](#best-practices)
+    - [Javascript event handlers](#javascript-event-handlers)
     - [Custom Elements and Attributes](#custom-elements-and-attributes)
     - [Rendering Views](#rendering-views)
-    - [Common View Engine Features](#common-view-engine-features)
+    - [Common Patterns](#common-patterns)
+        - [Master Pages](#master-pages)
+        - [Partial Views](#partial-views)
+        - [Model Binding](#model-binding)
+        - [Logical Constructs](#logical-constructs)
+    - [Best Practices](#best-practices)
 - [Samples](#samples)
-- [Nightly builds and NuGet feed](#nightly-builds-and-nuget-feed)
-- [More information](#more-information)
+- [Attribution to original authors](#attribution-to-original-authors)
 - [License](#license)
 
 ## About
@@ -121,7 +124,6 @@ script [ _src "some.js"; _async ] []
 
 There's also a wealth of [accessibility attributes](https://www.w3.org/TR/html-aria/) available under the `Giraffe.ViewEngine.Accessibility` module (needs to be explicitly opened).
 
-
 ### Text Content
 
 Naturally the most frequent content in any HTML document is pure text:
@@ -150,6 +152,20 @@ In this example the first `p` element will literally output the string as it is 
 Please be aware that the the usage of `rawText` is mainly designed for edge cases where someone would purposefully want to inject HTML (or JavaScript) code into a rendered view. If not used carefully this could potentially lead to serious security vulnerabilities and therefore should be used only when explicitly required.
 
 Most cases and particularly any user provided content should always be output via the `encodedText`/`str` function.
+
+### Naming Convention
+
+The `Giraffe.ViewEngine` has a naming convention which lets you easily determine the correct function name without having to know anything about the view engine's implementation.
+
+All HTML tags are defined as `XmlNode` elements under the exact same name as they are named in HTML. For example the `<html>` tag would be `html [] []`, an `<a>` tag would be `a [] []` and a `<span>` or `<canvas>` would be the `span [] []` or `canvas [] []` function.
+
+HTML attributes follow the same naming convention except that attributes have an underscore prepended. For example the `class` attribute would be `_class` and the `src` attribute would be `_src` in the `Giraffe.ViewEngine`.
+
+The underscore does not only help to distinguish an attribute from an element, but also avoid a naming conflict between tags and attributes of the same name (e.g. `<form>` vs. `<input form="form1">`).
+
+If a HTML attribute has a hyphen in the name (e.g. `accept-charset`) then the equivalent Giraffe attribute would be written in camel case notion after the initial underscore (e.g. `_acceptCharset`).
+
+*Should you find a HTML tag or attribute missing in the `Giraffe.ViewEngine` then you can either [create it yourself](#custom-elements-and-attributes) or send a [pull request on GitHub](https://github.com/giraffe-fsharp/Giraffe.ViewEngine/pulls).*
 
 ### Javascript event handlers
 
@@ -213,50 +229,6 @@ let page =
 ```
 
 In this way, you can write `greet.js` with all of your expected tooling, and still hook up the event handlers all in one place in the `Giraffe.ViewEngine`.
-
-### Naming Convention
-
-The `Giraffe.ViewEngine` has a naming convention which lets you easily determine the correct function name without having to know anything about the view engine's implementation.
-
-All HTML tags are defined as `XmlNode` elements under the exact same name as they are named in HTML. For example the `<html>` tag would be `html [] []`, an `<a>` tag would be `a [] []` and a `<span>` or `<canvas>` would be the `span [] []` or `canvas [] []` function.
-
-HTML attributes follow the same naming convention except that attributes have an underscore prepended. For example the `class` attribute would be `_class` and the `src` attribute would be `_src` in the `Giraffe.ViewEngine`.
-
-The underscore does not only help to distinguish an attribute from an element, but also avoid a naming conflict between tags and attributes of the same name (e.g. `<form>` vs. `<input form="form1">`).
-
-If a HTML attribute has a hyphen in the name (e.g. `accept-charset`) then the equivalent Giraffe attribute would be written in camel case notion after the initial underscore (e.g. `_acceptCharset`).
-
-*Should you find a HTML tag or attribute missing in the `Giraffe.ViewEngine` then you can either [create it yourself](#custom-elements-and-attributes) or send a [pull request on GitHub](https://github.com/giraffe-fsharp/Giraffe.ViewEngine/pulls).*
-
-### Best Practices
-
-Due to the huge amount of available HTML tags and their fairly generic (and short) names (e.g. `<form>`, `<option>`, `<select>`, etc.) there is a significant danger of accidentally overriding a function of the same name in an application's codebase. For that reason the `Giraffe.ViewEngine` becomes only available after opening the `Giraffe.ViewEngine` module.
-
-As a measure of good practice it is recommended to create all views in a separate module:
-
-```fsharp
-module MyWebApplication
-
-module Views =
-    open Giraffe.ViewEngine
-
-    let index =
-        html [] [
-            head [] [
-                title [] [ str "Giraffe Sample" ]
-            ]
-            body [] [
-                h1 [] [ str "I |> F#" ]
-                p [ _class "some-css-class"; _id "someId" ] [
-                    str "Hello World"
-                ]
-            ]
-        ]
-
-    let other = //...
-```
-
-This ensures that the opening of the `Giraffe.ViewEngine` is only contained in a small context of an application's codebase and therefore less of a threat to accidental overrides. In the above example views can always be accessed through the `Views` sub module (e.g. `Views.index`).
 
 ### Custom Elements and Attributes
 
@@ -450,7 +422,7 @@ module Views =
         ] |> master pageTitle
 ```
 
-#### Working with Models
+#### Model Binding
 
 A view which accepts a model is basically a function with an additional parameter:
 
@@ -481,9 +453,9 @@ module Views =
         ] |> master model.PageTitle
 ```
 
-#### If statements, loops and other logical constructs
+#### Logical Constructs
 
-Things like if statements, loops and other F# language constructs work just as expected:
+Things like if statements, loops and other F# language constructs just work as expected:
 
 ```fsharp
 let partial (books : Book list) =
@@ -496,75 +468,102 @@ let partial (books : Book list) =
 
 Overall the `Giraffe.ViewEngine` is extremely flexible and more feature rich than any other view engine given that it is just normal compiled F# code.
 
+### Best Practices
 
+Due to the huge amount of available HTML tags and their fairly generic (and short) names (e.g. `<form>`, `<option>`, `<select>`, etc.) there is a significant danger of accidentally overriding a function of the same name in an application's codebase. For that reason the `Giraffe.ViewEngine` becomes only available after opening the `Giraffe.ViewEngine` module.
 
-### Usage
+As a measure of good practice it is recommended to create all views in a separate module:
 
-Build your HTML and render! The following is attached as a standalone project:
+```fsharp
+module MyWebApplication
 
-``` FSharp
-module GithubExample = 
-  open Giraffe.ViewEngine
-  
-  let bodyTemplate (nameList : string list) : XmlNode = 
-    body [] [
-      h1 [] [Text "Welcome:"]
-      ol [] 
-        (nameList |> List.map (fun x -> li [] [Text x]))
-    ]
+module Views =
+    open Giraffe.ViewEngine
 
-  let navTemplate = 
-    nav [] [
-      a [_href "./About"] [Text "About"]
-    ]
+    let index =
+        html [] [
+            head [] [
+                title [] [ str "Giraffe Sample" ]
+            ]
+            body [] [
+                h1 [] [ str "I |> F#" ]
+                p [ _class "some-css-class"; _id "someId" ] [
+                    str "Hello World"
+                ]
+            ]
+        ]
 
-  let documentTemplate (nav : XmlNode) (body : XmlNode ) = 
-    html [] [
-      nav
-      body
-      ]
-
-  let render welcomeUsers = 
-    bodyTemplate welcomeUsers
-    |> (documentTemplate navTemplate)
-    |> Giraffe.ViewEngine.renderHtmlDocument
-
-[<EntryPoint>]
-let main args = 
-  let tfn = 
-    (System.IO.Path.GetTempFileName())
-    |> sprintf "%s.html" 
-
-  args 
-  |> Seq.toList
-  |> GithubExample.render
-  |> fun x -> System.IO.File.WriteAllText(tfn, x)
-  |> ignore 
-
-  let process = new System.Diagnostics.Process()
-  process.StartInfo.FileName <- tfn
-  process.StartInfo.UseShellExecute <- true
-  process.Start() |> ignore
-
-  0
+    let other = //...
 ```
 
-The above code yields the following:
+This ensures that the opening of the `Giraffe.ViewEngine` is only contained in a small context of an application's codebase and therefore less of a threat to accidental overrides. In the above example views can always be accessed through the `Views` sub module (e.g. `Views.index`).
+
+### Samples
+
+The following sample code creates and renders a HTML page with the help of the `Giraffe.ViewEngine` and subsequently saves it into a temporary `.html` file before opening it with the default browser:
+
+``` FSharp
+module Sample =
+    open Giraffe.ViewEngine
+
+    let bodyTemplate (nameList: string list): XmlNode =
+        body []
+            [ h1 [] [ Text "Welcome:" ]
+              ol [] (nameList |> List.map (fun x -> li [] [ Text x ])) ]
+
+    let navTemplate =
+        nav [] [ a [ _href "./About" ] [ Text "About" ] ]
+
+    let documentTemplate (nav: XmlNode) (body: XmlNode) =
+        html [] [ nav; body ]
+
+    let render welcomeUsers =
+        bodyTemplate welcomeUsers
+        |> (documentTemplate navTemplate)
+        |> RenderView.AsString.htmlDocument
+
+[<EntryPoint>]
+let main args =
+    let tfn =
+        (System.IO.Path.GetTempFileName()) |> sprintf "%s.html"
+
+    args
+    |> Seq.toList
+    |> Sample.render
+    |> fun x -> System.IO.File.WriteAllText(tfn, x)
+    |> ignore
+
+    let p = new System.Diagnostics.Process()
+    p.StartInfo.FileName <- tfn
+    p.StartInfo.UseShellExecute <- true
+    p.Start() |> ignore
+
+    0
+```
+
+The above code will return the following result:
 
 ![alt text][sample-screenshot]
 
 [sample-screenshot]: ./samples/Giraffe.ViewEngine.Sample/sample-screenshot.jpg "Example for Github"
 
-## Attribution to original authors of this code
+This sample application can also be viewed inside the [Giraffe.ViewEngine.Sample](./samples/Giraffe.ViewEngine.Sample) application.
 
-This code has been originally ported from Suave with small modifications afterwards.
+## Attribution to original authors
+
+This code has been originally ported from [Suave](https://github.com/SuaveIO/suave) and subsequently improved and extended over the years.
 
 The original code has been authored by
-* Henrik Feldt (https://github.com/haf)
-* Ademar Gonzalez (https://github.com/ademar)
+
+- [Henrik Feldt](https://github.com/haf)
+- [Ademar Gonzalez](https://github.com/ademar)
 
 You can find the original implementation here:
-https://github.com/SuaveIO/suave/blob/master/src/Experimental/Html.fs
 
-Thanks to Suave (https://github.com/SuaveIO/suave) for letting us borrow their code
-and thanks to Florian Verdonck (https://github.com/nojaf) for porting it to Giraffe.
+[https://github.com/SuaveIO/suave/blob/master/src/Experimental/Html.fs](https://github.com/SuaveIO/suave/blob/master/src/Experimental/Html.fs)
+
+Huge thanks to [Suave](https://github.com/SuaveIO/suave) for letting us borrow their code and thanks to [Florian Verdonck](https://github.com/nojaf) for originally porting it to Giraffe.
+
+## License
+
+[Apache 2.0](https://raw.githubusercontent.com/giraffe-fsharp/Giraffe.ViewEngine/master/LICENSE)
