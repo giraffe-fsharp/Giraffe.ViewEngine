@@ -38,8 +38,10 @@ jobs:
       GITHUB_USER: dustinmoris
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
-      - name: Pack
-        run: dotnet pack --configuration Release --no-restore --verbosity normal --include-symbols --include-source -p:PackageVersion=$GITHUB_RUN_ID -o nupkg src/Giraffe.ViewEngine/Giraffe.ViewEngine.fsproj
+      - name: Download Artifact
+        uses: actions/download-artifact@v1
+        with:
+          name: nupkg
       - name: Push Pre-Release NuGet
         run: |
           for f in ./nupkg/*.nupkg
