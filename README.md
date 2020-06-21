@@ -579,6 +579,20 @@ You can find the original implementation here:
 
 Huge thanks to [Suave](https://github.com/SuaveIO/suave) for letting us borrow their code and thanks to [Florian Verdonck](https://github.com/nojaf) for originally porting it to Giraffe.
 
+## Nightly builds and NuGet feed
+
+All official release packages are published to the official and public NuGet feed.
+
+Nightly builds (pre-release builds from the `develop` branch) produce unofficial pre-release NuGet packages which can be pulled from the project's public NuGet feed on GitHub:
+
+```
+https://github.com/orgs/giraffe-fsharp/packages
+```
+
+These packages are being tagged with the Workflow's run number as the package version.
+
+All other builds, such as builds triggered by pull requests produce a NuGet package which can be downloaded as an artifact from the individual GitHub action.
+
 ## License
 
 [Apache 2.0](https://raw.githubusercontent.com/giraffe-fsharp/Giraffe.ViewEngine/master/LICENSE)
