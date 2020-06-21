@@ -1,4 +1,6 @@
-﻿open BenchmarkDotNet.Attributes;
+﻿module Giraffe.ViewEngine.Benchmarks
+
+open BenchmarkDotNet.Attributes;
 open BenchmarkDotNet.Running;
 open Giraffe.ViewEngine
 open System.Text
@@ -45,21 +47,21 @@ type HtmlUtf8Benchmark() =
                                 [ rawText "Search" ] ] ] ] ]
         ]
 
-    let stringBuilder = new StringBuilder(16 * 1024)
+    let stringBuilder = StringBuilder(16 * 1024)
 
     [<Benchmark( Baseline = true )>]
     member this.Default() =
-        renderHtmlDocument doc |> Encoding.UTF8.GetBytes
+        RenderView.AsBytes.htmlDocument doc
 
     [<Benchmark>]
     member this.CachedStringBuilder() =
-        ViewBuilder.buildHtmlDocument stringBuilder doc
+        RenderView.IntoStringBuilder.htmlDocument stringBuilder doc
         stringBuilder.ToString() |> Encoding.UTF8.GetBytes |> ignore
         stringBuilder.Clear();
 
     [<Benchmark>]
     member this.CachedStringBuilderPooledUtf8Array() =
-        ViewBuilder.buildHtmlDocument stringBuilder doc
+        RenderView.IntoStringBuilder.htmlDocument stringBuilder doc
         let chars = ArrayPool<char>.Shared.Rent(stringBuilder.Length)
         stringBuilder.CopyTo(0, chars, 0, stringBuilder.Length)
         Encoding.UTF8.GetBytes(chars, 0, stringBuilder.Length) |> ignore

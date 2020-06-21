@@ -3,7 +3,7 @@
     <!-- General -->
     <AssemblyName>Giraffe.ViewEngine</AssemblyName>
     <Version>1.0.0</Version>
-    <Description>F# view engine support for the Giraffe web framework.</Description>
+    <Description>An F# view engine for Giraffe and other ASP.NET Core web applications.</Description>
     <Copyright>Copyright 2020 Dustin Moris Gorski</Copyright>
     <Authors>Dustin Moris Gorski and contributors</Authors>
     <NeutralLanguage>en-GB</NeutralLanguage>
@@ -37,7 +37,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Include="GiraffeViewEngine.fs" />
+    <Compile Include="StringBuilderPool.fs" />
+    <Compile Include="Engine.fs" />
   </ItemGroup>
 
 </Project>

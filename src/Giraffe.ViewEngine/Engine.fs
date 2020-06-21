@@ -13,214 +13,218 @@
 // Thanks to Suave (https://github.com/SuaveIO/suave) for letting us borrow their code
 // and thanks to Florian Verdonck (https://github.com/nojaf) for porting it to Giraffe.
 
-module Giraffe.ViewEngine
-
-open System
-open System.Net
-open System.Text
-
-// ---------------------------
-// Definition of different HTML content
-//
-// For more info check:
-// - https://developer.mozilla.org/en-US/docs/Web/HTML/Element
-// - https://www.w3.org/TR/html5/syntax.html#void-elements
-// ---------------------------
-
-type XmlAttribute =
-    | KeyValue of string * string
-    | Boolean  of string
-
-type XmlElement   = string * XmlAttribute[]    // Name * XML attributes
-
-type XmlNode =
-    | ParentNode  of XmlElement * XmlNode list // An XML element which contains nested XML elements
-    | VoidElement of XmlElement                // An XML element which cannot contain nested XML (e.g. <hr /> or <br />)
-    | Text        of string                    // Text content
-
-// ---------------------------
-// Helper functions
-// ---------------------------
-
-let inline private encode v = WebUtility.HtmlEncode v
-
-// ---------------------------
-// Building blocks
-// ---------------------------
-
-let attr (key : string) (value : string) = KeyValue (key, encode value)
-let flag (key : string) = Boolean key
-
-let tag (tagName    : string)
-        (attributes : XmlAttribute list)
-        (contents   : XmlNode list) =
-    ParentNode ((tagName, Array.ofList attributes), contents)
-
-let voidTag (tagName    : string)
-            (attributes : XmlAttribute list) =
-    VoidElement (tagName, Array.ofList attributes)
-
-/// <summary>
-///
-/// The `rawText` function will create an object of type `XmlNode` where the content will be rendered in its original form (without encoding).
-///
-/// **Special Notice**
-///
-/// Please be aware that the the usage of `rawText` is mainly designed for edge cases where someone would purposefully want to inject HTML (or JavaScript) code into a rendered view. If not used carefully this could potentially lead to serious security vulnerabilities and therefore should be used only when explicitly required.
-///
-/// Most cases and particularly any user provided content should always be output via the `encodedText` function.
-/// </summary>
-let rawText     (content : string) = Text content
-
-/// <summary>
-/// The `encodedText` function will output a string where the content has been HTML encoded.
-/// </summary>
-let encodedText (content : string) = Text (encode content)
-let emptyText                      = rawText ""
-let comment     (content : string) = rawText (sprintf "<!-- %s -->" content)
-
-/// <summary>
-/// An alias for the `encodedText` function.
-/// </summary>
-let str = encodedText
+namespace Giraffe.ViewEngine
 
 // ---------------------------
 // Default HTML elements
 // ---------------------------
 
-// Main root
-let html       = tag "html"
+[<AutoOpen>]
+module HtmlElements =
+    open System.Net
 
-// Document metadata
-let ``base``   = voidTag "base"
-let head       = tag "head"
-let link attr  = voidTag "link" attr
-let meta attr  = voidTag "meta" attr
-let style      = tag "style"
-let title      = tag "title"
+    // ---------------------------
+    // Definition of different HTML content
+    //
+    // For more info check:
+    // - https://developer.mozilla.org/en-US/docs/Web/HTML/Element
+    // - https://www.w3.org/TR/html5/syntax.html#void-elements
+    // ---------------------------
 
-// Content sectioning
-let blockquote = tag "blockquote"
-let body       = tag "body"
-let address    = tag "address"
-let article    = tag "article"
-let aside      = tag "aside"
-let footer     = tag "footer"
-let hgroup     = tag "hgroup"
-let h1         = tag "h1"
-let h2         = tag "h2"
-let h3         = tag "h3"
-let h4         = tag "h4"
-let h5         = tag "h5"
-let h6         = tag "h6"
-let header     = tag "header"
-let nav        = tag "nav"
-let section    = tag "section"
+    type XmlAttribute =
+        | KeyValue of string * string
+        | Boolean  of string
 
-// Text content
-let dd         = tag "dd"
-let div        = tag "div"
-let dl         = tag "dl"
-let dt         = tag "dt"
-let figcaption = tag "figcaption"
-let figure     = tag "figure"
-let hr         = voidTag "hr"
-let li         = tag "li"
-let main       = tag "main"
-let ol         = tag "ol"
-let p          = tag "p"
-let pre        = tag "pre"
-let ul         = tag "ul"
+    type XmlElement   = string * XmlAttribute[]    // Name * XML attributes
 
-// Inline text semantics
-let a          = tag "a"
-let abbr       = tag "abbr"
-let b          = tag "b"
-let bdi        = tag "bdi"
-let bdo        = tag "bdo"
-let br         = voidTag "br"
-let cite       = tag "cite"
-let code       = tag "code"
-let data       = tag "data"
-let dfn        = tag "dfn"
-let em         = tag "em"
-let i          = tag "i"
-let kbd        = tag "kbd"
-let mark       = tag "mark"
-let q          = tag "q"
-let rp         = tag "rp"
-let rt         = tag "rt"
-let rtc        = tag "rtc"
-let ruby       = tag "ruby"
-let s          = tag "s"
-let samp       = tag "samp"
-let small      = tag "small"
-let span       = tag "span"
-let strong     = tag "strong"
-let sub        = tag "sub"
-let sup        = tag "sup"
-let time       = tag "time"
-let u          = tag "u"
-let var        = tag "var"
-let wbr        = voidTag "wbr"
+    type XmlNode =
+        | ParentNode  of XmlElement * XmlNode list // An XML element which contains nested XML elements
+        | VoidElement of XmlElement                // An XML element which cannot contain nested XML (e.g. <hr /> or <br />)
+        | Text        of string                    // Text content
 
-// Image and multimedia
-let area       = voidTag "area"
-let audio      = tag "audio"
-let img        = voidTag "img"
-let map        = tag "map"
-let track      = voidTag "track"
-let video      = tag "video"
+    // ---------------------------
+    // Helper functions
+    // ---------------------------
 
-// Embedded content
-let embed      = voidTag "embed"
-let object     = tag "object"
-let param      = voidTag "param"
-let source     = voidTag "source"
+    let inline private encode v = WebUtility.HtmlEncode v
 
-// Scripting
-let canvas     = tag "canvas"
-let noscript   = tag "noscript"
-let script     = tag "script"
+    // ---------------------------
+    // Building blocks
+    // ---------------------------
 
-// Demarcating edits
-let del        = tag "del"
-let ins        = tag "ins"
+    let attr (key : string) (value : string) = KeyValue (key, encode value)
+    let flag (key : string) = Boolean key
 
-// Table content
-let caption    = tag "caption"
-let col        = voidTag "col"
-let colgroup   = tag "colgroup"
-let table      = tag "table"
-let tbody      = tag "tbody"
-let td         = tag "td"
-let tfoot      = tag "tfoot"
-let th         = tag "th"
-let thead      = tag "thead"
-let tr         = tag "tr"
+    let tag (tagName    : string)
+            (attributes : XmlAttribute list)
+            (contents   : XmlNode list) =
+        ParentNode ((tagName, Array.ofList attributes), contents)
 
-// Forms
-let button     = tag "button"
-let datalist   = tag "datalist"
-let fieldset   = tag "fieldset"
-let form       = tag "form"
-let input      = voidTag "input"
-let label      = tag "label"
-let legend     = tag "legend"
-let meter      = tag "meter"
-let optgroup   = tag "optgroup"
-let option     = tag "option"
-let output     = tag "output"
-let progress   = tag "progress"
-let select     = tag "select"
-let textarea   = tag "textarea"
+    let voidTag (tagName    : string)
+                (attributes : XmlAttribute list) =
+        VoidElement (tagName, Array.ofList attributes)
 
-// Interactive elements
-let details    = tag "details"
-let dialog     = tag "dialog"
-let menu       = tag "menu"
-let menuitem   = voidTag "menuitem"
-let summary    = tag "summary"
+    /// <summary>
+    ///
+    /// The `rawText` function will create an object of type `XmlNode` where the content will be rendered in its original form (without encoding).
+    ///
+    /// **Special Notice**
+    ///
+    /// Please be aware that the the usage of `rawText` is mainly designed for edge cases where someone would purposefully want to inject HTML (or JavaScript) code into a rendered view. If not used carefully this could potentially lead to serious security vulnerabilities and therefore should be used only when explicitly required.
+    ///
+    /// Most cases and particularly any user provided content should always be output via the `encodedText` function.
+    /// </summary>
+    let rawText     (content : string) = Text content
+
+    /// <summary>
+    /// The `encodedText` function will output a string where the content has been HTML encoded.
+    /// </summary>
+    let encodedText (content : string) = Text (encode content)
+    let emptyText                      = rawText ""
+    let comment     (content : string) = rawText (sprintf "<!-- %s -->" content)
+
+    /// <summary>
+    /// An alias for the `encodedText` function.
+    /// </summary>
+    let str = encodedText
+
+    // ---------------------------
+    // Default HTML elements
+    // ---------------------------
+
+    // Main root
+    let html       = tag "html"
+
+    // Document metadata
+    let ``base``   = voidTag "base"
+    let head       = tag "head"
+    let link attr  = voidTag "link" attr
+    let meta attr  = voidTag "meta" attr
+    let style      = tag "style"
+    let title      = tag "title"
+
+    // Content sectioning
+    let blockquote = tag "blockquote"
+    let body       = tag "body"
+    let address    = tag "address"
+    let article    = tag "article"
+    let aside      = tag "aside"
+    let footer     = tag "footer"
+    let hgroup     = tag "hgroup"
+    let h1         = tag "h1"
+    let h2         = tag "h2"
+    let h3         = tag "h3"
+    let h4         = tag "h4"
+    let h5         = tag "h5"
+    let h6         = tag "h6"
+    let header     = tag "header"
+    let nav        = tag "nav"
+    let section    = tag "section"
+
+    // Text content
+    let dd         = tag "dd"
+    let div        = tag "div"
+    let dl         = tag "dl"
+    let dt         = tag "dt"
+    let figcaption = tag "figcaption"
+    let figure     = tag "figure"
+    let hr         = voidTag "hr"
+    let li         = tag "li"
+    let main       = tag "main"
+    let ol         = tag "ol"
+    let p          = tag "p"
+    let pre        = tag "pre"
+    let ul         = tag "ul"
+
+    // Inline text semantics
+    let a          = tag "a"
+    let abbr       = tag "abbr"
+    let b          = tag "b"
+    let bdi        = tag "bdi"
+    let bdo        = tag "bdo"
+    let br         = voidTag "br"
+    let cite       = tag "cite"
+    let code       = tag "code"
+    let data       = tag "data"
+    let dfn        = tag "dfn"
+    let em         = tag "em"
+    let i          = tag "i"
+    let kbd        = tag "kbd"
+    let mark       = tag "mark"
+    let q          = tag "q"
+    let rp         = tag "rp"
+    let rt         = tag "rt"
+    let rtc        = tag "rtc"
+    let ruby       = tag "ruby"
+    let s          = tag "s"
+    let samp       = tag "samp"
+    let small      = tag "small"
+    let span       = tag "span"
+    let strong     = tag "strong"
+    let sub        = tag "sub"
+    let sup        = tag "sup"
+    let time       = tag "time"
+    let u          = tag "u"
+    let var        = tag "var"
+    let wbr        = voidTag "wbr"
+
+    // Image and multimedia
+    let area       = voidTag "area"
+    let audio      = tag "audio"
+    let img        = voidTag "img"
+    let map        = tag "map"
+    let track      = voidTag "track"
+    let video      = tag "video"
+
+    // Embedded content
+    let embed      = voidTag "embed"
+    let object     = tag "object"
+    let param      = voidTag "param"
+    let source     = voidTag "source"
+
+    // Scripting
+    let canvas     = tag "canvas"
+    let noscript   = tag "noscript"
+    let script     = tag "script"
+
+    // Demarcating edits
+    let del        = tag "del"
+    let ins        = tag "ins"
+
+    // Table content
+    let caption    = tag "caption"
+    let col        = voidTag "col"
+    let colgroup   = tag "colgroup"
+    let table      = tag "table"
+    let tbody      = tag "tbody"
+    let td         = tag "td"
+    let tfoot      = tag "tfoot"
+    let th         = tag "th"
+    let thead      = tag "thead"
+    let tr         = tag "tr"
+
+    // Forms
+    let button     = tag "button"
+    let datalist   = tag "datalist"
+    let fieldset   = tag "fieldset"
+    let form       = tag "form"
+    let input      = voidTag "input"
+    let label      = tag "label"
+    let legend     = tag "legend"
+    let meter      = tag "meter"
+    let optgroup   = tag "optgroup"
+    let option     = tag "option"
+    let output     = tag "output"
+    let progress   = tag "progress"
+    let select     = tag "select"
+    let textarea   = tag "textarea"
+
+    // Interactive elements
+    let details    = tag "details"
+    let dialog     = tag "dialog"
+    let menu       = tag "menu"
+    let menuitem   = voidTag "menuitem"
+    let summary    = tag "summary"
 
 // ---------------------------
 // Default HTML attributes
@@ -387,6 +391,9 @@ module Attributes =
     let _selected           = flag "selected"
     let _typemustmatch      = flag "typemustmatch"
 
+// ---------------------------
+// Accessibility attributes
+// ---------------------------
 
 /// <summary>
 /// Attributes to support WAI-ARIA accessibility guidelines
@@ -516,18 +523,20 @@ module Accessibility =
     let _ariaValueText        = attr "aria-valuetext"
 
 // ---------------------------
-// Build HTML/XML views
+// Internal ViewBuilder
 // ---------------------------
 
-[<RequireQualifiedAccess>]
-module ViewBuilder =
-    let inline private (+=) (sb : StringBuilder) (text : string) = sb.Append(text)
-    let inline private (+!) (sb : StringBuilder) (text : string) = sb.Append(text) |> ignore
+[<AutoOpen>]
+module internal ViewBuilder =
+    open System.Text
+
+    let inline internal (+=) (sb : StringBuilder) (text : string) = sb.Append(text)
+    let inline internal (+!) (sb : StringBuilder) (text : string) = sb.Append(text) |> ignore
 
     let inline private selfClosingBracket (isHtml : bool) =
         if isHtml then ">" else " />"
 
-    let rec private buildNode (isHtml : bool) (sb : StringBuilder) (node : XmlNode) : unit =
+    let rec internal buildNode (isHtml : bool) (sb : StringBuilder) (node : XmlNode) : unit =
 
         let buildElement closingBracket (elemName, attributes : XmlAttribute array) =
             match attributes with
@@ -553,36 +562,97 @@ module ViewBuilder =
         | ParentNode (e, nodes) -> do buildParentNode e nodes
         | VoidElement e         -> do buildElement (selfClosingBracket isHtml) e
 
-    let buildXmlNode  = buildNode false
-    let buildHtmlNode = buildNode true
-
-    let buildXmlNodes  sb (nodes : XmlNode list) = for n in nodes do buildXmlNode sb n
-    let buildHtmlNodes sb (nodes : XmlNode list) = for n in nodes do buildHtmlNode sb n
-
-    let buildHtmlDocument sb (document : XmlNode) =
-        sb += "<!DOCTYPE html>" +! Environment.NewLine
-        buildHtmlNode sb document
-
 // ---------------------------
 // Render HTML/XML views
 // ---------------------------
 
-let renderXmlNode (node : XmlNode) : string =
-    let sb = new StringBuilder() in ViewBuilder.buildXmlNode sb node
-    sb.ToString()
+[<RequireQualifiedAccess>]
+module RenderView =
+    open System
+    open System.Text
 
-let renderXmlNodes (nodes : XmlNode list) : string =
-    let sb = new StringBuilder() in ViewBuilder.buildXmlNodes sb nodes
-    sb.ToString()
+    [<RequireQualifiedAccess>]
+    module IntoStringBuilder =
+        let xmlNode  = buildNode false
+        let htmlNode = buildNode true
 
-let renderHtmlNode (node : XmlNode) : string =
-    let sb = new StringBuilder() in ViewBuilder.buildHtmlNode sb node
-    sb.ToString()
+        let xmlNodes  sb (nodes : XmlNode list) = for n in nodes do xmlNode sb n
+        let htmlNodes sb (nodes : XmlNode list) = for n in nodes do htmlNode sb n
 
-let renderHtmlNodes (nodes : XmlNode list) : string =
-    let sb = new StringBuilder() in ViewBuilder.buildHtmlNodes sb nodes
-    sb.ToString()
+        let htmlDocument sb (document : XmlNode) =
+            sb += "<!DOCTYPE html>" +! Environment.NewLine
+            htmlNode sb document
 
-let renderHtmlDocument (document : XmlNode) : string =
-    let sb = new StringBuilder() in ViewBuilder.buildHtmlDocument sb document
-    sb.ToString()
+    [<RequireQualifiedAccess>]
+    module AsString =
+        let xmlNode (node : XmlNode) : string =
+            let sb = StringBuilderPool.Rent()
+            IntoStringBuilder.xmlNode sb node
+            let output = sb.ToString()
+            StringBuilderPool.Release sb
+            output
+
+        let xmlNodes (nodes : XmlNode list) : string =
+            let sb = StringBuilderPool.Rent()
+            IntoStringBuilder.xmlNodes sb nodes
+            let output = sb.ToString()
+            StringBuilderPool.Release sb
+            output
+
+        let htmlNode (node : XmlNode) : string =
+            let sb = StringBuilderPool.Rent()
+            IntoStringBuilder.htmlNode sb node
+            let output = sb.ToString()
+            StringBuilderPool.Release sb
+            output
+
+        let htmlNodes (nodes : XmlNode list) : string =
+            let sb = StringBuilderPool.Rent()
+            IntoStringBuilder.htmlNodes sb nodes
+            let output = sb.ToString()
+            StringBuilderPool.Release sb
+            output
+
+        let htmlDocument (document : XmlNode) : string =
+            let sb = StringBuilderPool.Rent()
+            IntoStringBuilder.htmlDocument sb document
+            let output = sb.ToString()
+            StringBuilderPool.Release sb
+            output
+
+    [<RequireQualifiedAccess>]
+    module AsBytes =
+        open System.Buffers
+
+        let private outputAsBytes (sb : StringBuilder) =
+            let chars = ArrayPool<char>.Shared.Rent sb.Length
+            sb.CopyTo(0, chars, 0, sb.Length)
+            let result = Encoding.UTF8.GetBytes(chars, 0, sb.Length)
+            StringBuilderPool.Release sb
+            ArrayPool<char>.Shared.Return chars
+            result
+
+        let xmlNode (node : XmlNode) : byte[] =
+            let sb = StringBuilderPool.Rent()
+            IntoStringBuilder.xmlNode sb node
+            outputAsBytes sb
+
+        let xmlNodes (nodes : XmlNode list) : byte[] =
+            let sb = StringBuilderPool.Rent()
+            IntoStringBuilder.xmlNodes sb nodes
+            outputAsBytes sb
+
+        let htmlNode (node : XmlNode) : byte[] =
+            let sb = StringBuilderPool.Rent()
+            IntoStringBuilder.htmlNode sb node
+            outputAsBytes sb
+
+        let htmlNodes (nodes : XmlNode list) : byte[] =
+            let sb = StringBuilderPool.Rent()
+            IntoStringBuilder.htmlNodes sb nodes
+            outputAsBytes sb
+
+        let htmlDocument (document : XmlNode) : byte[] =
+            let sb = StringBuilderPool.Rent()
+            IntoStringBuilder.htmlDocument sb document
+            outputAsBytes sb
