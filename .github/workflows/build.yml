@@ -56,6 +56,9 @@ jobs:
     runs-on: ubuntu-latest
     env:
       NUGET_KEY: ${{ secrets.NUGET_KEY }}
+      GITHUB_SOURCE: https://nuget.pkg.github.com/giraffe-fsharp/
+      GITHUB_USER: dustinmoris
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - uses: actions/checkout@v2
       - name: Setup .NET Core
