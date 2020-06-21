@@ -31,6 +31,7 @@ jobs:
 
   prerelease:
     needs: build
+    if: github.ref == 'develop'
     runs-on: ubuntu-latest
     env:
       GITHUB_SOURCE: https://nuget.pkg.github.com/giraffe-fsharp/
