@@ -15,7 +15,7 @@
     let render welcomeUsers =
         bodyTemplate welcomeUsers
         |> (documentTemplate navTemplate)
-        |> Giraffe.ViewEngine.renderHtmlDocument
+        |> RenderView.AsString.htmlDocument
 
 [<EntryPoint>]
 let main args =

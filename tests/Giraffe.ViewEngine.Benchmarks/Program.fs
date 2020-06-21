@@ -51,17 +51,17 @@ type HtmlUtf8Benchmark() =
 
     [<Benchmark( Baseline = true )>]
     member this.Default() =
-        renderHtmlDocument doc |> Encoding.UTF8.GetBytes
+        RenderView.AsBytes.htmlDocument doc
 
     [<Benchmark>]
     member this.CachedStringBuilder() =
-        ViewBuilder.buildHtmlDocument stringBuilder doc
+        RenderView.IntoStringBuilder.htmlDocument stringBuilder doc
         stringBuilder.ToString() |> Encoding.UTF8.GetBytes |> ignore
         stringBuilder.Clear();
 
     [<Benchmark>]
     member this.CachedStringBuilderPooledUtf8Array() =
-        ViewBuilder.buildHtmlDocument stringBuilder doc
+        RenderView.IntoStringBuilder.htmlDocument stringBuilder doc
         let chars = ArrayPool<char>.Shared.Rent(stringBuilder.Length)
         stringBuilder.CopyTo(0, chars, 0, stringBuilder.Length)
         Encoding.UTF8.GetBytes(chars, 0, stringBuilder.Length) |> ignore

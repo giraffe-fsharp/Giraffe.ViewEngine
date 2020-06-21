@@ -26,9 +26,9 @@ An F# view engine for [Giraffe](https://github.com/giraffe-fsharp/Giraffe) and o
 
 ## About
 
-The `Giraffe.ViewEngine` is a UI framework which uses traditional F# functions and types to build rich HTML or XML based web views. This means that views built with the `Giraffe.ViewEngine` are automatically compiled into an assembly, don't require any disk IO to load and render views and users of the `Giraffe.ViewEngine` can utilise the full power of F# to create custom views in every possible way they like.
+The `Giraffe.ViewEngine` is a UI framework which uses traditional F# functions and types to build rich HTML or XML based web views. This means that views built with the `Giraffe.ViewEngine` are automatically compiled into an assembly, don't require any disk I/O to load or render views and users of the `Giraffe.ViewEngine` can utilise the full power of F# to create custom views in every way possible.
 
-Originally the `Giraffe.ViewEngine` was part of the [Giraffe web framework]() but is completely separated today and can be used on its own with any other .NET Core web application.
+Originally the `Giraffe.ViewEngine` was part of the [Giraffe web framework](https://github.com/giraffe-fsharp/giraffe) but has been completely separated since then and can be used on its own with any other .NET Core web application today.
 
 ## Documentation
 
@@ -36,7 +36,7 @@ Originally the `Giraffe.ViewEngine` was part of the [Giraffe web framework]() bu
 
 The `Giraffe.ViewEngine` is an extremely light weight F# DSL (Domain Specific Language) for building HTML.
 
-The `Giraffe.ViewEngine` is centered around the following types:
+It is centered around the following types:
 
 ```fsharp
 type XmlAttribute =
@@ -51,7 +51,9 @@ type XmlNode =
     | Text        of string                    // Text content
 ```
 
-The DSL has nodes of all of the standard html tags, such as `head`, `body`, `h1`, etc.
+The DSL mainly consists of F# functions which will create objects of one of the above defined types. Currently the `Giraffe.ViewEngine` has functions for all of the standard html tags, such as `head`, `body`, `h1`, etc.
+
+Please see [HTML Elements and Attributs](#html-elements-and-attributes) for further details and to get a better understanding.
 
 ### HTML Elements and Attributes
 
@@ -299,7 +301,7 @@ Rendering views in Giraffe is done through one of the following functions:
 
 The `Giraffe.ViewEngine` cannot only be used to render HTML views, but also for any other XML based content such as `<svg>` images or other arbitrary XML based data.
 
-The `renderHtmlDocument` function takes a single `XmlNode` as input parameter and renders a HTML page with a `DOCTYPE` declaration. This function should be used for rendering a complete HTML document. The `WriteHtmlViewAsync` extension method and the `htmlView` http handler both use the `renderHtmlDocument` function under the covers.
+The `renderHtmlDocument` function takes a single `XmlNode` as input parameter and renders a HTML page with a `DOCTYPE` declaration. This function should be used for rendering a complete HTML document.
 
 The `renderHtmlNodes` function takes an `XmlNode list` as input parameter and will output a single HTML string containing all the rendered HTML code. The `renderHtmlNode` function renders a single `XmlNode` element into a valid HTML string. Both, the `renderHtmlNodes` and `renderHtmlNode` function are useful for use cases where a HTML snippet needs to be created without a `DOCTYPE` declaration (e.g. templated emails, etc.).
 
