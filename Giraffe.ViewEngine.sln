@@ -21,6 +21,7 @@ ProjectSection(SolutionItems) = preProject
 	NuGet.config = NuGet.config
 	.gitattributes = .gitattributes
 	.gitignore = .gitignore
+	CODE_OF_CONDUCT.md = CODE_OF_CONDUCT.md
 EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "samples", "samples", "{AE9081DB-1992-4AEC-9D84-F276047E82D6}"

@@ -6,6 +6,8 @@ An F# view engine for [Giraffe](https://github.com/giraffe-fsharp/Giraffe) and o
 
 [![NuGet Info](https://buildstats.info/nuget/Giraffe.ViewEngine?includePreReleases=true)](https://www.nuget.org/packages/Giraffe.ViewEngine/)
 
+[![Build History](https://buildstats.info/github/chart/giraffe-fsharp/giraffe.viewengine?branch=develop&includeBuildsFromPullRequest=false)](https://github.com/giraffe-fsharp/giraffe.viewengine/actions)
+
 ## Table of contents
 
 - [About](#about)
