@@ -30,6 +30,7 @@ An F# view engine for [Giraffe](https://github.com/giraffe-fsharp/Giraffe) and o
     - [Best Practices](#best-practices)
 - [Samples](#samples)
 - [Attribution to original authors](#attribution-to-original-authors)
+- [Nightly builds and NuGet feed](#nightly-builds-and-nuget-feed)
 - [License](#license)
 
 ## About
@@ -583,11 +584,7 @@ Huge thanks to [Suave](https://github.com/SuaveIO/suave) for letting us borrow t
 
 All official release packages are published to the official and public NuGet feed.
 
-Nightly builds (pre-release builds from the `develop` branch) produce unofficial pre-release NuGet packages which can be pulled from the project's public NuGet feed on GitHub:
-
-```
-https://github.com/orgs/giraffe-fsharp/packages
-```
+Nightly builds (builds from the `develop` branch) produce unofficial pre-release packages which can be pulled from the [project's NuGet feed on GitHub](https://github.com/orgs/giraffe-fsharp/packages).
 
 These packages are being tagged with the Workflow's run number as the package version.
 
