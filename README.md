@@ -560,7 +560,7 @@ The original code has been authored by
 
 You can find the original implementation here:
 
-[https://github.com/SuaveIO/suave/blob/master/src/Experimental/Html.fs](https://github.com/SuaveIO/suave/blob/master/src/Experimental/Html.fs)
+[https://github.com/SuaveIO/suave/blob/master/src/Suave.Experimental/Html.fs](https://github.com/SuaveIO/suave/blob/master/src/Suave.Experimental/Html.fs)
 
 Huge thanks to [Suave](https://github.com/SuaveIO/suave) for letting us borrow their code and thanks to [Florian Verdonck](https://github.com/nojaf) for originally porting it to Giraffe.
 
