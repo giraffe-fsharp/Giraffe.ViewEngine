@@ -6,7 +6,11 @@ An F# view engine for [Giraffe](https://github.com/giraffe-fsharp/Giraffe) and o
 
 [![NuGet Info](https://buildstats.info/nuget/Giraffe.ViewEngine?includePreReleases=true)](https://www.nuget.org/packages/Giraffe.ViewEngine/)
 
-[![Build History](https://buildstats.info/github/chart/giraffe-fsharp/giraffe.viewengine?branch=develop&includeBuildsFromPullRequest=false)](https://github.com/giraffe-fsharp/giraffe.viewengine/actions)
+### Linux, macOS and Windows Build Status
+
+![.NET Core](https://github.com/giraffe-fsharp/Giraffe.ViewEngine/workflows/.NET%20Core/badge.svg?branch=develop)
+
+[![Build history](https://buildstats.info/github/chart/giraffe-fsharp/Giraffe.ViewEngine?branch=develop&includeBuildsFromPullRequest=false)](https://github.com/giraffe-fsharp/Giraffe.ViewEngine/actions?query=branch%3Adevelop++)
 
 ## Table of contents
 
