@@ -21,7 +21,7 @@
     <PackageTags>Giraffe;View;Engine;ASP.NET Core;FSharp;Functional;Http;Web;Framework;Micro;Service</PackageTags>
     <PackageReleaseNotes>https://raw.githubusercontent.com/giraffe-fsharp/Giraffe.ViewEngine/master/RELEASE_NOTES.md</PackageReleaseNotes>
     <PackageProjectUrl>https://github.com/giraffe-fsharp/Giraffe.ViewEngine</PackageProjectUrl>
-    <PackageIconUrl>https://raw.githubusercontent.com/giraffe-fsharp/Giraffe/master/giraffe-64x64.png</PackageIconUrl>
+    <PackageIcon>giraffe-64x64.png</PackageIcon>
     <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <RepositoryType>git</RepositoryType>
@@ -35,6 +35,13 @@
     <NoWarn>FS2003;FS0044</NoWarn>
   </PropertyGroup>
 
+  <ItemGroup>
+    <None Include="../../giraffe-64x64.png">
+      <Pack>true</Pack>
+      <PackagePath>$(PackageIconUrl)</PackagePath>
+    </None>
+  </ItemGroup>
+  
   <ItemGroup>
     <Compile Include="StringBuilderPool.fs" />
     <Compile Include="Engine.fs" />

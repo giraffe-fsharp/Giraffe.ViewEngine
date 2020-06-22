@@ -8,7 +8,10 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
+      strategy:
+        matrix:
+          os: [ ubuntu-latest, windows-latest, macos-latest ]
     steps:
     - uses: actions/checkout@v2
     - name: Setup .NET Core
@@ -22,8 +25,10 @@ jobs:
     - name: Test
       run: dotnet test --configuration Release tests/Giraffe.ViewEngine.Tests/Giraffe.ViewEngine.Tests.fsproj
     - name: Pack
+      if: matrix.os == 'ubuntu-latest'
       run: dotnet pack --configuration Release --no-restore --verbosity normal --include-symbols --include-source -p:PackageVersion=$GITHUB_RUN_ID src/Giraffe.ViewEngine/Giraffe.ViewEngine.fsproj
     - name: Upload Artifact
+      if: matrix.os == 'ubuntu-latest'
       uses: actions/upload-artifact@v2
       with:
         name: nupkg
