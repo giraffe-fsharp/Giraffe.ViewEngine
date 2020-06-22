@@ -304,10 +304,10 @@ let someTag = voidTag "foo"
 let someContent = someTag []
 
 // Void tag will be rendered to valid HTML: <foo>
-let output1 = renderHtmlNode someContent
+let output1 = RenderView.AsString.htmlNode someContent
 
 // Void tag will be rendered to valid XML: <foo />
-let output2 = renderXmlNode someContent
+let output2 = RenderView.AsString.xmlNode someContent
 ```
 
 #### StringBuilder Pools
