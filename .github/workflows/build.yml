@@ -57,7 +57,7 @@ jobs:
         with:
           name: nupkg
       - name: Authenticate with GitHub Packages
-        run: dotnet nuget add source $GITHUB_FEED -n GitHub -u $GITHUB_USER -p $GITHUB_TOKEN
+        run: dotnet nuget add source $GITHUB_FEED -n GitHub -u $GITHUB_USER -p $GITHUB_TOKEN --store-password-in-clear-text
       - name: Push to GitHub Packages
         run: dotnet nuget push ./nupkg/*.nupkg --source GitHub --skip-duplicate
   deploy:
@@ -79,7 +79,7 @@ jobs:
           echo Clean Version: $VERSION
           dotnet pack -v normal -c Release --include-symbols --include-source -p:PackageVersion=$VERSION -o nupkg src/$PROJECT_NAME/$PROJECT_NAME.*proj
       - name: Authenticate with GitHub Packages
-        run: dotnet nuget add source $GITHUB_FEED -n GitHub -u $GITHUB_USER -p $GITHUB_TOKEN
+        run: dotnet nuget add source $GITHUB_FEED -n GitHub -u $GITHUB_USER -p $GITHUB_TOKEN --store-password-in-clear-text
       - name: Push to GitHub Packages
         run: dotnet nuget push ./nupkg/*.nupkg --source GitHub --skip-duplicate
       - name: Push to NuGet Feed

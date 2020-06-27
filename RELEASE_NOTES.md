@@ -1,6 +1,13 @@
 Release Notes
 =============
 
+## 1.1.0
+
+- Added `strf` which is a shortcut for the commonly used `sprintf fmt |> encodedText` function.
+- Added a few missing HTML elements and attributes:
+    - Elements: `picture`
+    - Attributes: `_color`, `_property`, `_srcset`
+
 ## 1.0.0
 
 Original port from Giraffe with additional improvements/changes:

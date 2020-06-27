@@ -88,6 +88,11 @@ module HtmlElements =
     /// </summary>
     let str = encodedText
 
+    /// <summary>
+    /// The `strf` function will output the result from `sprintf fmt` as `encodedText`.
+    /// </summary>
+    let strf fmt = sprintf fmt |> encodedText
+
     // ---------------------------
     // Default HTML elements
     // ---------------------------
@@ -175,6 +180,7 @@ module HtmlElements =
     let map        = tag "map"
     let track      = voidTag "track"
     let video      = tag "video"
+    let picture    = tag "picture"
 
     // Embedded content
     let embed      = voidTag "embed"
@@ -245,6 +251,7 @@ module Attributes =
     let _charset            = attr "charset"
     let _cite               = attr "cite"
     let _class              = attr "class"
+    let _color              = attr "color"
     let _cols               = attr "cols"
     let _colspan            = attr "colspan"
     let _content            = attr "content"
@@ -291,6 +298,7 @@ module Attributes =
     let _placeholder        = attr "placeholder"
     let _poster             = attr "poster"
     let _preload            = attr "preload"
+    let _property           = attr "property"
     let _rel                = attr "rel"
     let _rows               = attr "rows"
     let _rowspan            = attr "rowspan"
@@ -304,6 +312,7 @@ module Attributes =
     let _src                = attr "src"
     let _srcdoc             = attr "srcdoc"
     let _srclang            = attr "srclang"
+    let _srcset            = attr "srcset"
     let _start              = attr "start"
     let _step               = attr "step"
     let _style              = attr "style"
