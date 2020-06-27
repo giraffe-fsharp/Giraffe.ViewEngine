@@ -56,10 +56,12 @@ jobs:
         uses: actions/download-artifact@v1
         with:
           name: nupkg
-      - name: Authenticate with GitHub Packages
-        run: dotnet nuget add source $GITHUB_FEED -n GitHub -u $GITHUB_USER -p $GITHUB_TOKEN --store-password-in-clear-text
-      - name: Push to GitHub Packages
-        run: dotnet nuget push ./nupkg/*.nupkg --source GitHub --skip-duplicate
+      - name: Push to GitHub Feed
+        run: |
+          for f in ./nupkg/*.nupkg
+          do
+            curl -vX PUT -u "$GITHUB_USER:$GITHUB_TOKEN" -F package=@$f $GITHUB_SOURCE
+          done
   deploy:
     needs: build
     if: github.event_name == 'release'
@@ -78,9 +80,11 @@ jobs:
           VERSION="${VERSION//v}"
           echo Clean Version: $VERSION
           dotnet pack -v normal -c Release --include-symbols --include-source -p:PackageVersion=$VERSION -o nupkg src/$PROJECT_NAME/$PROJECT_NAME.*proj
-      - name: Authenticate with GitHub Packages
-        run: dotnet nuget add source $GITHUB_FEED -n GitHub -u $GITHUB_USER -p $GITHUB_TOKEN --store-password-in-clear-text
-      - name: Push to GitHub Packages
-        run: dotnet nuget push ./nupkg/*.nupkg --source GitHub --skip-duplicate
+      - name: Push to GitHub Feed
+        run: |
+          for f in ./nupkg/*.nupkg
+          do
+            curl -vX PUT -u "$GITHUB_USER:$GITHUB_TOKEN" -F package=@$f $GITHUB_SOURCE
+          done
       - name: Push to NuGet Feed
         run: dotnet nuget push ./nupkg/*.nupkg --source $NUGET_FEED --skip-duplicate --api-key $NUGET_KEY
