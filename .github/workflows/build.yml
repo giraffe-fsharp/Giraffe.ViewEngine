@@ -6,7 +6,7 @@ on:
     types:
       - published
 env:
-  PROJECT_PATH: src/Giraffe.ViewEngine/Giraffe.ViewEngine.fsproj
+  PROJECT_NAME: Giraffe.ViewEngine
   GITHUB_SOURCE: https://nuget.pkg.github.com/giraffe-fsharp/
   GITHUB_USER: dustinmoris
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -31,13 +31,13 @@ jobs:
       run: dotnet test --configuration Release
     - name: Pack
       if: matrix.os == 'ubuntu-latest'
-      run: dotnet pack --configuration Release --no-restore --verbosity normal --include-symbols --include-source -p:PackageVersion=$GITHUB_RUN_ID $PROJECT_PATH
+      run: dotnet pack --configuration Release --no-restore --verbosity normal --include-symbols --include-source -p:PackageVersion=$GITHUB_RUN_ID src/$PROJECT_NAME/$PROJECT_NAME.*proj
     - name: Upload Artifact
       if: matrix.os == 'ubuntu-latest'
       uses: actions/upload-artifact@v2
       with:
         name: nupkg
-        path: ./src/Giraffe.ViewEngine/bin/Release/*.nupkg
+        path: ./src/${{ env.PROJECT_NAME }}/bin/Release/*.nupkg
   prerelease:
     needs: build
     if: github.ref == 'refs/heads/develop'
@@ -71,7 +71,7 @@ jobs:
           echo Version: $VERSION
           VERSION="${VERSION//v}"
           echo Clean Version: $VERSION
-          dotnet pack --configuration Release --verbosity normal --include-symbols --include-source -p:PackageVersion=$VERSION -o nupkg $PROJECT_PATH
+          dotnet pack --configuration Release --verbosity normal --include-symbols --include-source -p:PackageVersion=$VERSION -o nupkg src/$PROJECT_NAME/$PROJECT_NAME.*proj
       - name: Push to GitHub Feed
         run: |
           for f in ./nupkg/*.nupkg
