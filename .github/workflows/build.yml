@@ -12,9 +12,12 @@ env:
   DOTNET_CLI_TELEMETRY_OPTOUT: true
   # Project name to pack and publish
   PROJECT_NAME: Giraffe.ViewEngine
-  GITHUB_SOURCE: https://nuget.pkg.github.com/giraffe-fsharp/
+  # GitHub Packages Feed settings
+  GITHUB_FEED: https://nuget.pkg.github.com/giraffe-fsharp/
   GITHUB_USER: dustinmoris
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  # Official NuGet Feed settings
+  NUGET_FEED: https://api.nuget.org/v3/index.json
   NUGET_KEY: ${{ secrets.NUGET_KEY }}
 jobs:
   build:
@@ -32,12 +35,12 @@ jobs:
       - name: Restore
         run: dotnet restore
       - name: Build
-        run: dotnet build --configuration Release --no-restore
+        run: dotnet build -c Release --no-restore
       - name: Test
-        run: dotnet test --configuration Release
+        run: dotnet test -c Release
       - name: Pack
         if: matrix.os == 'ubuntu-latest'
-        run: dotnet pack --configuration Release --no-restore --verbosity normal --include-symbols --include-source -p:PackageVersion=$GITHUB_RUN_ID src/$PROJECT_NAME/$PROJECT_NAME.*proj
+        run: dotnet pack -v normal -c Release --no-restore --include-symbols --include-source -p:PackageVersion=$GITHUB_RUN_ID src/$PROJECT_NAME/$PROJECT_NAME.*proj
       - name: Upload Artifact
         if: matrix.os == 'ubuntu-latest'
         uses: actions/upload-artifact@v2
@@ -53,13 +56,10 @@ jobs:
         uses: actions/download-artifact@v1
         with:
           name: nupkg
-      - name: Push Pre-Release NuGet
-        run: |
-          for f in ./nupkg/*.nupkg
-          do
-            curl -vX PUT -u "$GITHUB_USER:$GITHUB_TOKEN" -F package=@$f $GITHUB_SOURCE
-          done
-        shell: bash
+      - name: Authenticate with GitHub Packages
+        run: dotnet nuget add source $GITHUB_FEED -n GitHub -u $GITHUB_USER -p $GITHUB_TOKEN
+      - name: Push to GitHub Packages
+        run: dotnet nuget push ./nupkg/*.nupkg --source GitHub --skip-duplicate
   deploy:
     needs: build
     if: github.event_name == 'release'
@@ -77,13 +77,10 @@ jobs:
           echo Version: $VERSION
           VERSION="${VERSION//v}"
           echo Clean Version: $VERSION
-          dotnet pack --configuration Release --verbosity normal --include-symbols --include-source -p:PackageVersion=$VERSION -o nupkg src/$PROJECT_NAME/$PROJECT_NAME.*proj
-      - name: Push to GitHub Feed
-        run: |
-          for f in ./nupkg/*.nupkg
-          do
-            curl -vX PUT -u "$GITHUB_USER:$GITHUB_TOKEN" -F package=@$f $GITHUB_SOURCE
-          done
-        shell: bash
+          dotnet pack -v normal -c Release --include-symbols --include-source -p:PackageVersion=$VERSION -o nupkg src/$PROJECT_NAME/$PROJECT_NAME.*proj
+      - name: Authenticate with GitHub Packages
+        run: dotnet nuget add source $GITHUB_FEED -n GitHub -u $GITHUB_USER -p $GITHUB_TOKEN
+      - name: Push to GitHub Packages
+        run: dotnet nuget push ./nupkg/*.nupkg --source GitHub --skip-duplicate
       - name: Push to NuGet Feed
-        run: dotnet nuget push nupkg/*.nupkg --source https://api.nuget.org/v3/index.json --skip-duplicate --api-key $NUGET_KEY
+        run: dotnet nuget push ./nupkg/*.nupkg --source $NUGET_FEED --skip-duplicate --api-key $NUGET_KEY
