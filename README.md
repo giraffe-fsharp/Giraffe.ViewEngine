@@ -1,6 +1,6 @@
-# Giraffe.ViewEngine
-
 ![Giraffe](https://raw.githubusercontent.com/giraffe-fsharp/Giraffe/master/giraffe.png)
+
+# Giraffe.ViewEngine
 
 An F# view engine for [Giraffe](https://github.com/giraffe-fsharp/Giraffe) and other ASP.NET Core web applications.
 
