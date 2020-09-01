@@ -1,6 +1,10 @@
 Release Notes
 =============
 
+## 1.1.1
+
+- Fixed the `strf` function (see [#6](https://github.com/giraffe-fsharp/Giraffe.ViewEngine/issues/6))
+
 ## 1.1.0
 
 - Added `strf` which is a shortcut for the commonly used `sprintf fmt |> encodedText` function.

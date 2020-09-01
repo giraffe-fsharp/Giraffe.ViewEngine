@@ -91,7 +91,7 @@ module HtmlElements =
     /// <summary>
     /// The `strf` function will output the result from `sprintf fmt` as `encodedText`.
     /// </summary>
-    let strf fmt = sprintf fmt |> encodedText
+    let strf fmt = Printf.kprintf encodedText fmt
 
     // ---------------------------
     // Default HTML elements
