@@ -232,6 +232,9 @@ module HtmlElements =
     let menuitem   = voidTag "menuitem"
     let summary    = tag "summary"
 
+    // Others
+    let iframe    = tag "iframe"
+
 // ---------------------------
 // Default HTML attributes
 // ---------------------------
