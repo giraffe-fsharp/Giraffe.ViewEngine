@@ -1,6 +1,10 @@
 Release Notes
 =============
 
+## 1.2.0
+
+- Added missing `iframe` element ([#9](https://github.com/giraffe-fsharp/Giraffe.ViewEngine/issues/9))
+
 ## 1.1.1
 
 - Fixed the `strf` function (see [#6](https://github.com/giraffe-fsharp/Giraffe.ViewEngine/issues/6))
