@@ -1,6 +1,14 @@
 Release Notes
 =============
 
+## 1.3.0
+
+Upgraded to `net5.0` target framework.
+
+`Giraffe.ViewEngine` version `1.2.0` and version `1.3.0` are identical in functionality. The only difference is that `1.2.0` targets `netcoreapp3.1` and `1.3.0` targets `net5.0`. If you cannot upgrade your .NET Core project to `net5.0` yet then stay on version `1.2.0`.
+
+New features and bug fixes will continue off the `1.3.0` version and therefore only target `net5.0` going forward. The upgrade path from `netcoreapp3.1` to `net5.0` is so minimal that it is a reasonable expectation and not worth the effort to support both target frameworks.
+
 ## 1.2.0
 
 - Added missing `iframe` element ([#9](https://github.com/giraffe-fsharp/Giraffe.ViewEngine/issues/9))
