@@ -8,7 +8,7 @@
     <NeutralLanguage>en-GB</NeutralLanguage>
 
     <!-- Build settings -->
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <TargetFramework>net5.0</TargetFramework>
     <DebugType>portable</DebugType>
     <OutputType>Library</OutputType>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
@@ -41,7 +41,7 @@
       <PackagePath>$(PackageIconUrl)</PackagePath>
     </None>
   </ItemGroup>
-  
+
   <ItemGroup>
     <Compile Include="StringBuilderPool.fs" />
     <Compile Include="Engine.fs" />
