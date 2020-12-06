@@ -66,7 +66,7 @@ type XmlNode =
 
 The DSL mainly consists of F# functions which will create objects of one of the above defined types. Currently the `Giraffe.ViewEngine` has functions for all of the standard html tags, such as `head`, `body`, `h1`, etc.
 
-Please see [HTML Elements and Attributs](#html-elements-and-attributes) for further details and to get a better understanding.
+Please see [HTML Elements and Attributes](#html-elements-and-attributes) for further details and to get a better understanding.
 
 ### HTML Elements and Attributes
 
