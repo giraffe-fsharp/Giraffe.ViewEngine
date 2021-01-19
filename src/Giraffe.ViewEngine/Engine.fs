@@ -232,6 +232,10 @@ module HtmlElements =
     let menuitem   = voidTag "menuitem"
     let summary    = tag "summary"
 
+    // Web Components
+    let slot       = tag "slot"
+    let template   = tag "template"
+
     // Others
     let iframe    = tag "iframe"
 
