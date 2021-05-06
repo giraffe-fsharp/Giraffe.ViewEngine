@@ -634,14 +634,24 @@ module RenderView =
 
     [<RequireQualifiedAccess>]
     module AsBytes =
+
+        #if !NETSTANDARD2_0
         open System.Buffers
+        #endif
 
         let private outputAsBytes (sb : StringBuilder) =
-            let chars = ArrayPool<char>.Shared.Rent sb.Length
+            let chars = 
+                #if NETSTANDARD2_0
+                Array.create (sb.Length) Char.MinValue
+                #else
+                ArrayPool<char>.Shared.Rent sb.Length
+                #endif
             sb.CopyTo(0, chars, 0, sb.Length)
             let result = Encoding.UTF8.GetBytes(chars, 0, sb.Length)
             StringBuilderPool.Release sb
+            #if !NETSTANDARD2_0
             ArrayPool<char>.Shared.Return chars
+            #endif
             result
 
         let xmlNode (node : XmlNode) : byte[] =
