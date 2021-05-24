@@ -232,6 +232,10 @@ module HtmlElements =
     let menuitem   = voidTag "menuitem"
     let summary    = tag "summary"
 
+    // Web Components
+    let slot       = tag "slot"
+    let template   = tag "template"
+
     // Others
     let iframe    = tag "iframe"
 
@@ -634,14 +638,23 @@ module RenderView =
 
     [<RequireQualifiedAccess>]
     module AsBytes =
-        open System.Buffers
 
         let private outputAsBytes (sb : StringBuilder) =
-            let chars = ArrayPool<char>.Shared.Rent sb.Length
+            let chars = 
+                #if NETSTANDARD2_0
+                Array.create (sb.Length) Char.MinValue
+                #else
+                System.Buffers.ArrayPool<char>.Shared.Rent sb.Length
+                #endif
+
             sb.CopyTo(0, chars, 0, sb.Length)
             let result = Encoding.UTF8.GetBytes(chars, 0, sb.Length)
             StringBuilderPool.Release sb
-            ArrayPool<char>.Shared.Return chars
+
+            #if !NETSTANDARD2_0
+            System.Buffers.ArrayPool<char>.Shared.Return chars
+            #endif
+
             result
 
         let xmlNode (node : XmlNode) : byte[] =

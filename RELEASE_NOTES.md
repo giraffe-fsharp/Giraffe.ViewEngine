@@ -1,6 +1,11 @@
 Release Notes
 =============
 
+## 1.4.0
+
+- Added `slot` and `template` elements
+- Added .NET Standard 2.0 support for full framework support
+
 ## 1.3.0
 
 Upgraded to `net5.0` target framework.
