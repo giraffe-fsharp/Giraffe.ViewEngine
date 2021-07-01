@@ -35,7 +35,7 @@ module HtmlElements =
         | KeyValue of string * string
         | Boolean  of string
 
-    type XmlElement   = string * XmlAttribute list    // Name * XML attributes
+    type XmlElement   = (struct(string * XmlAttribute list))    // Name * XML attributes
 
     type XmlNode =
         | ParentNode  of XmlElement * XmlNode list // An XML element which contains nested XML elements
@@ -554,7 +554,7 @@ module internal ViewBuilder =
 
     let rec internal buildNode (isHtml : bool) (sb : StringBuilder) (node : XmlNode) : unit =
 
-        let buildElement closingBracket (elemName, attributes : XmlAttribute list) =
+        let buildElement closingBracket struct(elemName, attributes : XmlAttribute list) =
             match attributes with
             | [] -> do sb += "<" += elemName +! closingBracket
             | _    ->
@@ -568,7 +568,7 @@ module internal ViewBuilder =
 
                 do sb +! closingBracket
 
-        let inline buildParentNode (elemName, attributes : XmlAttribute list) (nodes : XmlNode list) =
+        let inline buildParentNode struct(elemName, attributes : XmlAttribute list) (nodes : XmlNode list) =
             do buildElement ">" (elemName, attributes)
             for node in nodes do buildNode isHtml sb node
             do sb += "</" += elemName +! ">"
