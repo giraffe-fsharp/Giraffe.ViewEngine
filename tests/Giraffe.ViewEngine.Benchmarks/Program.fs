@@ -68,6 +68,51 @@ type HtmlUtf8Benchmark() =
         ArrayPool<char>.Shared.Return(chars)
         stringBuilder.Clear()
 
+[<MemoryDiagnoser>]
+type HtmlBuildBenchmark() =
+
+    let doc() =
+        div [] [
+            div [ _class "top-bar" ]
+                [ div [ _class "top-bar-left" ]
+                    [ ul [ _class "dropdown menu"
+                           _data "dropdown-menu" "" ]
+                        [ li [ _class "menu-text" ]
+                            [ rawText "Site Title" ]
+                          li [ ]
+                            [ a [ _href "#" ]
+                                [ str """One <script>alert("hello world")</script>""" ]
+                              ul [ _class "menu vertical" ]
+                                [ li [ ]
+                                    [ a [ _href "#" ]
+                                        [ rawText "One" ] ]
+                                  li [ ]
+                                    [ a [ _href "#" ]
+                                        [ str "Two" ] ]
+                                  li [ ]
+                                    [ a [ _href "#" ]
+                                        [ rawText "Three" ] ] ] ]
+                          li [ ]
+                            [ a [ _href "#" ]
+                                [ str "Two" ] ]
+                          li [ ]
+                            [ a [ _href "#" ]
+                                [ str "Three" ] ] ] ]
+                  div [ _class "top-bar-right" ]
+                    [ ul [ _class "menu" ]
+                        [ li [ ]
+                            [ input [ _type "search"
+                                      _placeholder "Search" ] ]
+                          li [ ]
+                            [ button [ _type "button"
+                                       _class "button" ]
+                                [ rawText "Search" ] ] ] ] ]
+        ]
+
+    [<Benchmark( Baseline = true )>]
+    member this.Default() =
+        doc()
+
 [<EntryPoint>]
 let main args =
     let asm = typeof<HtmlUtf8Benchmark>.Assembly
