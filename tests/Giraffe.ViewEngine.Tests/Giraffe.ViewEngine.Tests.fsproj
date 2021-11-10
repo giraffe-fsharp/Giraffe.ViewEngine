@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net5.0</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
@@ -19,7 +19,7 @@
     <PackageReference Include="xunit.runner.visualstudio" Version="2.4.*" />
     <PackageReference Include="NSubstitute" Version="4.2.*" />
     <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.*" PrivateAssets="All" />
-    <PackageReference Include="Microsoft.AspNetCore.TestHost" Version="5.0.*" />
+    <PackageReference Include="Microsoft.AspNetCore.TestHost" Version="6.0.*" />
   </ItemGroup>
 
   <ItemGroup>
