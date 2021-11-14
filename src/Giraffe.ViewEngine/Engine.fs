@@ -35,7 +35,7 @@ module HtmlElements =
         | KeyValue of string * string
         | Boolean  of string
 
-    type XmlElement   = string * XmlAttribute[]    // Name * XML attributes
+    type XmlElement   = (struct(string * XmlAttribute list))    // Name * XML attributes
 
     type XmlNode =
         | ParentNode  of XmlElement * XmlNode list // An XML element which contains nested XML elements
@@ -58,11 +58,11 @@ module HtmlElements =
     let tag (tagName    : string)
             (attributes : XmlAttribute list)
             (contents   : XmlNode list) =
-        ParentNode ((tagName, Array.ofList attributes), contents)
+        ParentNode ((tagName, attributes), contents)
 
     let voidTag (tagName    : string)
                 (attributes : XmlAttribute list) =
-        VoidElement (tagName, Array.ofList attributes)
+        VoidElement (tagName, attributes)
 
     /// <summary>
     ///
@@ -554,21 +554,21 @@ module internal ViewBuilder =
 
     let rec internal buildNode (isHtml : bool) (sb : StringBuilder) (node : XmlNode) : unit =
 
-        let buildElement closingBracket (elemName, attributes : XmlAttribute array) =
+        let buildElement closingBracket struct(elemName, attributes : XmlAttribute list) =
             match attributes with
-            | [||] -> do sb += "<" += elemName +! closingBracket
+            | [] -> do sb += "<" += elemName +! closingBracket
             | _    ->
                 do sb += "<" +! elemName
 
                 attributes
-                |> Array.iter (fun attr ->
+                |> List.iter (fun attr ->
                     match attr with
                     | KeyValue (k, v) -> do sb += " " += k += "=\"" += v +! "\""
                     | Boolean k       -> do sb += " " +! k)
 
                 do sb +! closingBracket
 
-        let inline buildParentNode (elemName, attributes : XmlAttribute array) (nodes : XmlNode list) =
+        let inline buildParentNode struct(elemName, attributes : XmlAttribute list) (nodes : XmlNode list) =
             do buildElement ">" (elemName, attributes)
             for node in nodes do buildNode isHtml sb node
             do sb += "</" += elemName +! ">"
