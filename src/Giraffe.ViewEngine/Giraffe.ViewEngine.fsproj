@@ -8,7 +8,7 @@
     <NeutralLanguage>en-GB</NeutralLanguage>
 
     <!-- Build settings -->
-    <TargetFrameworks>net5.0;netstandard2.0</TargetFrameworks>
+    <TargetFrameworks>net6.0;netstandard2.0</TargetFrameworks>
     <DebugType>portable</DebugType>
     <OutputType>Library</OutputType>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
@@ -46,5 +46,5 @@
     <Compile Include="StringBuilderPool.fs" />
     <Compile Include="Engine.fs" />
   </ItemGroup>
-  
+
 </Project>
