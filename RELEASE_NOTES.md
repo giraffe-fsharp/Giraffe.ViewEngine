@@ -1,6 +1,11 @@
 Release Notes
 =============
 
+## 2.0.0-alpha-1
+
+- Updated to .NET 6 and Giraffe 6.0.0-alpha-*
+- Improved performance by removing redundant `ToArray` functions and making `XmlElement` a struct
+
 ## 1.4.0
 
 - Added `slot` and `template` elements
