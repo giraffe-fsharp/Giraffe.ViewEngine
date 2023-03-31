@@ -1,0 +1,55 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <!-- General -->
+    <AssemblyName>Giraffe.ViewEngine.StrongName</AssemblyName>
+    <Description>An F# view engine for Giraffe and other ASP.NET Core web applications. Signed as a strong assembly for projects that depend on strong names.</Description>
+    <Copyright>Copyright 2020 Dustin Moris Gorski</Copyright>
+    <Authors>Dustin Moris Gorski and contributors</Authors>
+    <NeutralLanguage>en-GB</NeutralLanguage>
+    
+    <!-- Build settings -->
+    <TargetFrameworks>net6.0;netstandard2.0</TargetFrameworks>
+    <DebugType>portable</DebugType>
+    <OutputType>Library</OutputType>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <IncludeSymbols>true</IncludeSymbols>
+    
+    <!-- NuGet settings -->
+    <PackageId>Giraffe.ViewEngine.StrongName</PackageId>
+    <PackageTags>Giraffe;View;Engine;ASP.NET Core;FSharp;Functional;Http;Web;Framework;Micro;Service;StrongName</PackageTags>
+    <PackageReleaseNotes>https://raw.githubusercontent.com/giraffe-fsharp/Giraffe.ViewEngine/master/RELEASE_NOTES.md</PackageReleaseNotes>
+    <PackageProjectUrl>https://github.com/giraffe-fsharp/Giraffe.ViewEngine</PackageProjectUrl>
+    <PackageIcon>giraffe-64x64.png</PackageIcon>
+    <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
+    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+    <RepositoryType>git</RepositoryType>
+    <RepositoryUrl>https://github.com/giraffe-fsharp/Giraffe.ViewEngine</RepositoryUrl>
+    
+    <!-- SourceLink settings -->
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    
+    <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
+    <NoWarn>FS2003;FS0044</NoWarn>
+
+    <!-- Strong name related settings -->
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>key.snk</AssemblyOriginatorKeyFile>
+    
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="../../giraffe-64x64.png">
+      <Pack>true</Pack>
+      <PackagePath>$(PackageIconUrl)</PackagePath>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="..\Giraffe.ViewEngine\StringBuilderPool.fs" />
+    <Compile Include="..\Giraffe.ViewEngine\Engine.fs" />
+  </ItemGroup>
+
+</Project>

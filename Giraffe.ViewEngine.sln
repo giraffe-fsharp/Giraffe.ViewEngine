@@ -14,19 +14,21 @@ EndProject
 Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "Giraffe.ViewEngine.Tests", "tests\Giraffe.ViewEngine.Tests\Giraffe.ViewEngine.Tests.fsproj", "{5EBF86C7-6FF5-45D6-9787-A77FCF77188D}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_root", "_root", "{55329640-BF2E-411E-8F97-A397DA138E7F}"
-ProjectSection(SolutionItems) = preProject
-	LICENSE = LICENSE
-	README.md = README.md
-	RELEASE_NOTES.md = RELEASE_NOTES.md
-	NuGet.config = NuGet.config
-	.gitattributes = .gitattributes
-	.gitignore = .gitignore
-	CODE_OF_CONDUCT.md = CODE_OF_CONDUCT.md
-EndProjectSection
+	ProjectSection(SolutionItems) = preProject
+		LICENSE = LICENSE
+		README.md = README.md
+		RELEASE_NOTES.md = RELEASE_NOTES.md
+		NuGet.config = NuGet.config
+		.gitattributes = .gitattributes
+		.gitignore = .gitignore
+		CODE_OF_CONDUCT.md = CODE_OF_CONDUCT.md
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "samples", "samples", "{AE9081DB-1992-4AEC-9D84-F276047E82D6}"
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Giraffe.ViewEngine.Sample", "samples\Giraffe.ViewEngine.Sample\Giraffe.ViewEngine.Sample.fsproj", "{AD23CC18-C2ED-47CB-847F-34CB5460259B}"
+EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Giraffe.ViewEngine.StrongName", "src\Giraffe.ViewEngine.StrongName\Giraffe.ViewEngine.StrongName.fsproj", "{DADFF90B-109E-4469-A298-CA6A7E668926}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -50,6 +52,10 @@ Global
 		{AD23CC18-C2ED-47CB-847F-34CB5460259B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AD23CC18-C2ED-47CB-847F-34CB5460259B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AD23CC18-C2ED-47CB-847F-34CB5460259B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DADFF90B-109E-4469-A298-CA6A7E668926}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DADFF90B-109E-4469-A298-CA6A7E668926}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DADFF90B-109E-4469-A298-CA6A7E668926}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DADFF90B-109E-4469-A298-CA6A7E668926}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -59,6 +65,7 @@ Global
 		{B73D9521-FF59-4514-B26B-E17CEDDDD7B6} = {46B33AE0-AFED-4B25-A515-CFE125BE9CF4}
 		{5EBF86C7-6FF5-45D6-9787-A77FCF77188D} = {46B33AE0-AFED-4B25-A515-CFE125BE9CF4}
 		{AD23CC18-C2ED-47CB-847F-34CB5460259B} = {AE9081DB-1992-4AEC-9D84-F276047E82D6}
+		{DADFF90B-109E-4469-A298-CA6A7E668926} = {2220E7F8-8762-4E3E-BA32-30BCD8915F04}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {B37FB108-DCCC-4EDD-AEED-8F3D069356D6}
