@@ -81,7 +81,7 @@ module HtmlElements =
     /// </summary>
     let encodedText (content : string) = Text (encode content)
     let emptyText                      = rawText ""
-    let comment     (content : string) = rawText (sprintf "<!-- %s -->" content)
+    let comment     (content : string) = rawText $"<!-- %s{content} -->"
 
     /// <summary>
     /// An alias for the `encodedText` function.
@@ -265,7 +265,7 @@ module Attributes =
     let _contenteditable    = attr "contenteditable"
     let _coords             = attr "coords"
     let _crossorigin        = attr "crossorigin"
-    let _data key           = attr (sprintf "data-%s" key)
+    let _data key           = attr $"data-%s{key}"
     let _datetime           = attr "datetime"
     let _dir                = attr "dir"
     let _dirname            = attr "dirname"
