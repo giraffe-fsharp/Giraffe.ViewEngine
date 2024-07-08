@@ -29,7 +29,7 @@ type public StringBuilderPool =
             let lifetime = DateTimeOffset.Now - StringBuilderPool.created
             let expired  = lifetime > PoolLimits.MaximumLifetime
             let sb       = StringBuilderPool.instance
-            if not expired && sb <> null then
+            if not expired && not (isNull sb) then
                 StringBuilderPool.instance <- null
                 sb.Clear()
             else new StringBuilder(PoolLimits.MinimumCapacity)
