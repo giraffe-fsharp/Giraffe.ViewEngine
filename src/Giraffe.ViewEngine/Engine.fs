@@ -284,6 +284,7 @@ module Attributes =
     let _hreflang           = attr "hreflang"
     let _httpEquiv          = attr "http-equiv"
     let _id                 = attr "id"
+    let _inputmode          = attr "inputmode"
     let _integrity          = attr "integrity"
     let _keytype            = attr "keytype"
     let _kind               = attr "kind"
